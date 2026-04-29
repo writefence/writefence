@@ -1,0 +1,23 @@
+# Local configuration and secrets
+.env
+.env.*
+writefence.yaml
+writefence.local.yaml
+
+# Runtime data
+*.jsonl
+*.log
+session-state.json
+.writefence/
+
+# Build outputs
+bin/
+dist/
+coverage.out
+/writefence
+/writefence-cli
+/writefence-mcp
+
+# OS/editor noise
+.DS_Store
+*.swp
