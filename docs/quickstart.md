@@ -5,6 +5,18 @@ not require LightRAG, Qdrant, Ollama, auth, billing, or hosted services.
 
 ## 1. Build the binaries
 
+For the safest first run, use the smoke script:
+
+```bash
+./demo/smoke-quickstart.sh
+```
+
+It builds the binaries, starts the mock store and proxy on temporary ports,
+checks the local UI, verifies blocked and allowed writes, runs replay, and
+stops background processes.
+
+For a manual run:
+
 ```bash
 go build -o bin/writefence ./cmd/writefence
 go build -o bin/writefence-cli ./cmd/writefence-cli
@@ -68,3 +80,41 @@ Then open:
 ```text
 http://127.0.0.1:9622/_writefence
 ```
+
+## Docker Compose
+
+Docker Compose starts WriteFence with the included mock memory store:
+
+```bash
+docker compose up --build
+```
+
+Open:
+
+```text
+http://127.0.0.1:9622/_writefence
+```
+
+Stop it with:
+
+```bash
+docker compose down
+```
+
+If host port `9622` is busy:
+
+```bash
+WRITEFENCE_PORT=19622 docker compose up --build
+```
+
+## Troubleshooting
+
+- Use Go 1.25 or newer for source builds.
+- If ports `9621` or `9622` are busy, use the smoke script or pass different
+  `--addr` and `--upstream` values.
+- Set `WRITEFENCE_DATA_DIR=/path/to/dir` to keep logs and WAL files in a
+  predictable directory.
+- Semantic quarantine requires embeddings plus Qdrant. Without those optional
+  services, deterministic rules and replay still work.
+- On Windows, use WSL or Docker for the alpha. Native Windows release archives
+  are planned after the alpha.

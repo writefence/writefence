@@ -63,8 +63,16 @@ Example blocked response:
 
 ## Local alpha quickstart
 
-For a complete local preview without LightRAG, Qdrant, Ollama, auth, billing,
-or hosted services, use the mock memory store:
+For the most reliable first run, use the smoke script. It builds the binaries,
+starts the mock memory store and WriteFence on temporary ports, verifies the
+operator UI, checks blocked and allowed writes, runs the canonical demo, and
+cleans up background processes.
+
+```bash
+./demo/smoke-quickstart.sh
+```
+
+Manual path:
 
 ```bash
 go build -o bin/writefence ./cmd/writefence
@@ -96,6 +104,32 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
 See [docs/quickstart.md](docs/quickstart.md) for the full local alpha path,
 [docs/configuration.md](docs/configuration.md) for policy configuration, and
 [docs/compatibility.md](docs/compatibility.md) for upstream compatibility.
+
+## Docker quickstart
+
+Docker Compose starts WriteFence with the included mock memory store:
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+```text
+http://127.0.0.1:9622/_writefence
+```
+
+Stop and remove the local stack with:
+
+```bash
+docker compose down
+```
+
+If host port `9622` is busy:
+
+```bash
+WRITEFENCE_PORT=19622 docker compose up --build
+```
 
 ## LightRAG quickstart
 
@@ -133,6 +167,18 @@ Notes:
 - quarantine requires semantic dedup to be enabled on the running proxy
 - without embeddings and Qdrant, the demo prints a note and continues with deterministic local rules
 - the script assumes WriteFence is already running on `http://127.0.0.1:9622`
+
+## Troubleshooting
+
+- Use Go 1.25 or newer for source builds.
+- If ports `9621` or `9622` are busy, either use `./demo/smoke-quickstart.sh`
+  or pass different `--addr` / `--upstream` values.
+- Set `WRITEFENCE_DATA_DIR=/path/to/dir` to keep logs and WAL files in a
+  predictable directory.
+- Semantic quarantine is optional. It requires embeddings plus Qdrant; without
+  them, WriteFence still runs deterministic local rules and replay.
+- On Windows, use WSL or Docker for the alpha. Native Windows release archives
+  are planned after the alpha.
 
 ## Local UI Screenshots
 

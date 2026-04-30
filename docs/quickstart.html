@@ -70,20 +70,24 @@
     <h1>Run WriteFence locally.</h1>
     <p>This quickstart runs WriteFence with a tiny mock memory store. It does not require LightRAG, Qdrant, Ollama, auth, billing, or hosted services.</p>
 
-    <h2>1. Build the binaries</h2>
+    <h2>1. Run the smoke script</h2>
+    <pre><code>./demo/smoke-quickstart.sh</code></pre>
+    <p>The smoke script builds the binaries, starts the mock store and proxy on temporary ports, checks the local UI, verifies blocked and allowed writes, runs replay, and stops background processes.</p>
+
+    <h2>2. Build the binaries manually</h2>
     <pre><code>go build -o bin/writefence ./cmd/writefence
 go build -o bin/writefence-cli ./cmd/writefence-cli</code></pre>
 
-    <h2>2. Start the mock memory store</h2>
+    <h2>3. Start the mock memory store</h2>
     <pre><code>go run ./demo/mock-memory-store.go -addr 127.0.0.1:9621</code></pre>
     <p>The mock store accepts <code>POST /documents/text</code> and keeps accepted writes in a local JSONL file under <code>/tmp/writefence-mock-store</code> by default.</p>
 
-    <h2>3. Start WriteFence</h2>
+    <h2>4. Start WriteFence</h2>
     <pre><code>WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
   ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
     <p>Open the local operator UI at <code>http://127.0.0.1:9622/_writefence</code>.</p>
 
-    <h2>4. Run the demo flow</h2>
+    <h2>5. Run the demo flow</h2>
     <pre><code>WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
   WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl \
   ./demo/canonical-demo.sh</code></pre>
@@ -94,10 +98,25 @@ go build -o bin/writefence-cli ./cmd/writefence-cli</code></pre>
     </ul>
     <div class="note">Semantic quarantine requires embeddings plus Qdrant. Without those optional services, the demo prints a note and continues with deterministic local rules.</div>
 
-    <h2>5. Load deterministic UI data</h2>
+    <h2>6. Load deterministic UI data</h2>
     <pre><code>WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo
 WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo \
   ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
+
+    <h2>Docker Compose</h2>
+    <pre><code>docker compose up --build</code></pre>
+    <p>Open <code>http://127.0.0.1:9622/_writefence</code>. Stop the stack with <code>docker compose down</code>.</p>
+    <p>If host port <code>9622</code> is busy:</p>
+    <pre><code>WRITEFENCE_PORT=19622 docker compose up --build</code></pre>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li>Use Go 1.25 or newer for source builds.</li>
+      <li>If ports <code>9621</code> or <code>9622</code> are busy, use the smoke script or pass different <code>--addr</code> and <code>--upstream</code> values.</li>
+      <li>Set <code>WRITEFENCE_DATA_DIR=/path/to/dir</code> to keep logs and WAL files in a predictable directory.</li>
+      <li>Semantic quarantine requires embeddings plus Qdrant. Without those optional services, deterministic rules and replay still work.</li>
+      <li>On Windows, use WSL or Docker for the alpha. Native Windows release archives are planned after the alpha.</li>
+    </ul>
   </main>
 </body>
 </html>

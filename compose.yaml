@@ -1,0 +1,24 @@
+services:
+  mock-store:
+    build: .
+    entrypoint: ["/mock-memory-store"]
+    command: ["-addr", "0.0.0.0:9621", "-data-dir", "/data"]
+    volumes:
+      - writefence-mock-store:/data
+
+  writefence:
+    build: .
+    depends_on:
+      - mock-store
+    entrypoint: ["/writefence"]
+    command: ["--addr", "0.0.0.0:9622", "--upstream", "http://mock-store:9621"]
+    environment:
+      WRITEFENCE_DATA_DIR: /data
+    ports:
+      - "${WRITEFENCE_PORT:-9622}:9622"
+    volumes:
+      - writefence-data:/data
+
+volumes:
+  writefence-data:
+  writefence-mock-store:

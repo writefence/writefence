@@ -39,3 +39,6 @@ jobs:
 
       - name: Build writefence-mcp
         run: go build ./cmd/writefence-mcp
+
+      - name: Quickstart smoke
+        run: ./demo/smoke-quickstart.sh
