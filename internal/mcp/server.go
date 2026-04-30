@@ -23,7 +23,7 @@ type jsonRPCResponse struct {
 	Error   interface{} `json:"error,omitempty"`
 }
 
-// Server is the writefence MCP server exposing guardian tools over JSON-RPC 2.0.
+// Server is the WriteFence MCP server exposing operator tools over JSON-RPC 2.0.
 type Server struct {
 	violationsLog string
 }

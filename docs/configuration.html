@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WriteFence Configuration</title>
+  <meta name="description" content="Configure WriteFence alpha with YAML and CLI overrides.">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: oklch(98.5% 0.008 245);
+      --ink: oklch(18% 0.018 245);
+      --muted: oklch(43% 0.032 248);
+      --line: oklch(85% 0.018 248);
+      --line-strong: oklch(72% 0.035 248);
+      --console: oklch(17% 0.018 245);
+      --blue: oklch(58% 0.20 255);
+      --max: 920px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: Aptos, "Segoe UI Variable", "Helvetica Neue", Arial, sans-serif; line-height: 1.55; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    header { border-bottom: 1px solid var(--line); }
+    nav { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 760; font-size: 18px; }
+    .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; }
+    .links { display: flex; gap: 18px; font-size: 14px; }
+    main { padding: clamp(42px, 7vw, 72px) 0 72px; }
+    .eyebrow { margin: 0 0 10px; color: var(--blue); font-size: 12px; font-weight: 820; letter-spacing: 0.08em; text-transform: uppercase; }
+    h1 { margin: 0 0 18px; font-size: clamp(42px, 7vw, 62px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 38px 0 10px; font-size: 25px; line-height: 1.15; }
+    h3 { margin: 28px 0 8px; font-size: 19px; }
+    p, li { color: var(--muted); }
+    pre { overflow: auto; padding: 18px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--console); color: oklch(93% 0.015 245); font-size: 14px; line-height: 1.52; }
+    code { font-family: "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.94em; }
+    @media (max-width: 760px) { .links { display: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="index.html" aria-label="WriteFence home"><img src="assets/brand/writefence-mark.png" alt=""><span>WriteFence</span></a>
+      <div class="links">
+        <a href="quickstart.html">Quickstart</a>
+        <a href="configuration.html">Configuration</a>
+        <a href="compatibility.html">Compatibility</a>
+        <a href="https://github.com/writefence/writefence">GitHub</a>
+      </div>
+    </nav>
+  </header>
+  <main class="wrap">
+    <p class="eyebrow">Policy surface</p>
+    <h1>Configure local write admission.</h1>
+    <p>WriteFence alpha is configured with a YAML file plus optional CLI flag overrides. The current policy surface is intentionally small: users can tune built-in rules, but cannot define arbitrary custom rules yet.</p>
+
+    <h2>Example</h2>
+    <pre><code>proxy:
+  addr: "127.0.0.1:9622"
+  upstream: "http://127.0.0.1:9621"
+  state_file: "/tmp/writefence-alpha/session-state.json"
+  violations_log: "/tmp/writefence-alpha/writefence-violations.jsonl"
+  wal_log: "/tmp/writefence-alpha/writefence-wal.jsonl"
+  quarantine_log: "/tmp/writefence-alpha/writefence-quarantine.jsonl"
+  metrics_enabled: true
+
+rules:
+  english:
+    threshold: 0.05
+  prefix:
+    allowed:
+      - "[STATUS]"
+      - "[DECISION]"
+      - "[SETUP]"
+      - "[CONFIG]"
+      - "[RUNBOOK]"
+  semantic_dedup:
+    threshold: 0.98
+    embed_url: "http://127.0.0.1:11434"
+    embed_model: "qwen3-embedding:8b"
+    qdrant_url: "http://127.0.0.1:6333"</code></pre>
+
+    <h2>Run with YAML</h2>
+    <pre><code>./bin/writefence --config ./writefence.yaml</code></pre>
+    <p>CLI flags override YAML values when provided explicitly.</p>
+    <pre><code>./bin/writefence \
+  --config ./writefence.yaml \
+  --addr 127.0.0.1:9622 \
+  --upstream http://127.0.0.1:9621</code></pre>
+
+    <h2>Proxy settings</h2>
+    <ul>
+      <li><code>addr</code> controls where WriteFence listens.</li>
+      <li><code>upstream</code> points to the memory store that receives accepted writes.</li>
+      <li><code>violations_log</code>, <code>wal_log</code>, and <code>quarantine_log</code> keep local operator evidence.</li>
+      <li><code>metrics_enabled</code> controls whether Prometheus-compatible metrics are served at <code>/metrics</code>.</li>
+    </ul>
+
+    <h2>Rule settings</h2>
+    <h3><code>english</code></h3>
+    <p><code>threshold</code> controls when mixed Cyrillic/English content becomes a hard block. Smaller amounts may be admitted with a warning.</p>
+    <h3><code>prefix</code></h3>
+    <p><code>allowed</code> is the list of required document prefixes. This gives memory entries a predictable category before they become durable state.</p>
+    <h3><code>semantic_dedup</code></h3>
+    <p>Semantic deduplication is enabled only when both <code>embed_url</code> and <code>qdrant_url</code> are configured. If either dependency is absent, WriteFence keeps running with deterministic local rules.</p>
+
+    <h2>Alpha boundary</h2>
+    <p>The alpha validates the local write-admission loop: block, warn, quarantine, replay, and inspect decisions. Hosted policy management, multi-tenant auth, billing, a custom policy DSL, and broad adapter coverage are later product decisions.</p>
+  </main>
+</body>
+</html>

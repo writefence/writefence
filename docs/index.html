@@ -8,43 +8,49 @@
   <style>
     :root {
       color-scheme: light;
-      --ink: #111418;
-      --muted: #5a6370;
-      --quiet: #7a8492;
-      --line: #d9dee7;
-      --panel: #f7f8fa;
-      --panel-strong: #eef3f8;
-      --dark: #070a0f;
-      --blue: #1463ff;
-      --cyan: #09aeea;
-      --green: #15803d;
-      --red: #b42318;
-      --amber: #a15c07;
-      --violet: #6d28d9;
-      --max: 1120px;
+      --paper: oklch(98.5% 0.008 245);
+      --paper-2: oklch(95.8% 0.012 245);
+      --ink: oklch(18% 0.018 245);
+      --muted: oklch(43% 0.032 248);
+      --quiet: oklch(57% 0.032 248);
+      --line: oklch(85% 0.018 248);
+      --line-strong: oklch(72% 0.035 248);
+      --console: oklch(17% 0.018 245);
+      --console-2: oklch(22% 0.024 245);
+      --blue: oklch(58% 0.20 255);
+      --cyan: oklch(70% 0.16 220);
+      --green: oklch(62% 0.15 150);
+      --amber: oklch(72% 0.14 82);
+      --violet: oklch(65% 0.18 300);
+      --red: oklch(62% 0.18 25);
+      --max: 1260px;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Aptos, "Segoe UI Variable", "Helvetica Neue", Arial, sans-serif;
       color: var(--ink);
-      background: #fff;
+      background:
+        linear-gradient(90deg, rgba(20,99,255,0.045) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(20,99,255,0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 72px 72px;
       line-height: 1.5;
     }
     a { color: var(--blue); text-decoration: none; }
     a:hover { text-decoration: underline; }
     code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-family: "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace;
       font-size: 0.94em;
     }
     .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
     header {
       border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.96);
+      background: color-mix(in oklch, var(--paper) 92%, transparent);
       position: sticky;
       top: 0;
-      z-index: 2;
-      backdrop-filter: blur(10px);
+      z-index: 4;
+      backdrop-filter: blur(12px);
     }
     nav {
       min-height: 64px;
@@ -57,58 +63,55 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
+      color: var(--ink);
       font-weight: 760;
       font-size: 18px;
       letter-spacing: 0;
-      color: var(--ink);
     }
-    .mark {
-      display: grid;
-      place-items: center;
-      width: 28px;
-      height: 28px;
+    .brand img {
+      width: 30px;
+      height: 30px;
       border-radius: 7px;
-      color: #fff;
-      background: var(--dark);
-      font-size: 13px;
-      font-weight: 800;
+      display: block;
     }
     .links { display: flex; gap: 18px; align-items: center; color: var(--muted); font-size: 14px; }
     .hero {
-      padding: 76px 0 54px;
+      padding: clamp(48px, 7vw, 88px) 0 clamp(42px, 6vw, 70px);
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
     }
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
-      gap: 44px;
+      grid-template-columns: minmax(500px, 0.82fr) minmax(560px, 1.18fr);
+      gap: clamp(34px, 4vw, 52px);
       align-items: center;
     }
     .eyebrow {
       margin: 0 0 14px;
       color: var(--blue);
-      font-size: 13px;
-      font-weight: 760;
+      font-size: 12px;
+      font-weight: 820;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     h1 {
-      margin: 0 0 18px;
-      font-size: clamp(40px, 6.4vw, 76px);
-      line-height: 0.98;
+      margin: 0 0 20px;
+      font-size: clamp(44px, 5.4vw, 68px);
+      line-height: 0.96;
       letter-spacing: 0;
+      max-width: 620px;
     }
     .lead {
-      margin: 0 0 22px;
-      font-size: 20px;
+      margin: 0 0 18px;
+      max-width: 650px;
       color: var(--muted);
-      max-width: 640px;
+      font-size: clamp(19px, 2vw, 23px);
+      line-height: 1.36;
     }
     .sublead {
-      margin: 0 0 28px;
+      margin: 0 0 30px;
+      max-width: 640px;
       color: var(--muted);
-      max-width: 620px;
+      font-size: 16px;
     }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
     .button {
@@ -116,140 +119,211 @@
       align-items: center;
       justify-content: center;
       min-height: 44px;
-      padding: 10px 15px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      font-weight: 680;
+      padding: 10px 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
       color: var(--ink);
-      background: #fff;
+      background: color-mix(in oklch, var(--paper) 88%, oklch(99% 0.006 245));
+      font-weight: 720;
     }
-    .button.primary { color: #fff; border-color: var(--blue); background: var(--blue); }
-    .button:hover { text-decoration: none; border-color: #aeb8c7; }
-    .button.primary:hover { border-color: #0f51d5; background: #0f51d5; }
-    .status-line {
+    .button.primary {
+      color: oklch(98% 0.008 245);
+      border-color: var(--blue);
+      background: var(--blue);
+    }
+    .button:hover { text-decoration: none; border-color: var(--blue); }
+    .pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 9px;
+      margin-top: 22px;
       color: var(--quiet);
       font-size: 13px;
     }
     .pill {
-      display: inline-flex;
-      align-items: center;
       min-height: 28px;
       padding: 4px 9px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(255,255,255,0.76);
+      background: color-mix(in oklch, var(--paper) 74%, oklch(99% 0.006 245));
+    }
+    .hero-panel {
+      position: relative;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: color-mix(in oklch, var(--paper-2) 86%, oklch(99% 0.006 245));
+      box-shadow: 0 28px 80px rgba(33, 50, 72, 0.18);
+    }
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 14px;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(20,99,255,0.16), transparent 30%, rgba(9,174,234,0.14));
+      mask: linear-gradient(var(--ink) 0 0) content-box, linear-gradient(var(--ink) 0 0);
+      mask-composite: exclude;
+      padding: 1px;
     }
     .shot {
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      border: 1px solid color-mix(in oklch, var(--line) 74%, var(--ink));
+      border-radius: 9px;
       overflow: hidden;
-      background: var(--panel);
-      box-shadow: 0 24px 70px rgba(20, 22, 26, 0.12);
+      background: var(--console);
     }
     .shot img { display: block; width: 100%; height: auto; }
-    section { padding: 56px 0; border-bottom: 1px solid var(--line); }
-    h2 { margin: 0 0 14px; font-size: 31px; line-height: 1.12; letter-spacing: 0; }
-    .section-lead { margin: 0 0 22px; max-width: 760px; color: var(--muted); font-size: 17px; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .feature {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 18px;
-      background: #fff;
+    section {
+      padding: clamp(48px, 6vw, 74px) 0;
+      border-bottom: 1px solid var(--line);
     }
-    .feature h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: 0; }
-    .feature p { margin: 0; color: var(--muted); }
-    .split {
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(30px, 3.6vw, 46px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .section-lead {
+      margin: 0 0 24px;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+    .proof {
       display: grid;
-      grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr);
-      gap: 34px;
+      grid-template-columns: 1.05fr 0.95fr 1fr;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--line);
+    }
+    .proof > div {
+      min-height: 210px;
+      padding: clamp(20px, 3vw, 30px);
+      background: color-mix(in oklch, var(--paper) 91%, oklch(99% 0.006 245));
+    }
+    .proof h3 { margin: 0 0 10px; font-size: 22px; }
+    .proof p { margin: 0; color: var(--muted); }
+    .decision-layout {
+      display: grid;
+      grid-template-columns: minmax(420px, 0.8fr) minmax(520px, 1.2fr);
+      gap: 38px;
       align-items: start;
     }
-    .flow {
+    .decision-path {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
-      align-items: stretch;
-      margin-top: 22px;
     }
-    .step {
+    .decision-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 18px;
+      padding: 15px 16px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 14px;
-      min-height: 96px;
-      background: var(--panel);
-      font-weight: 740;
+      border-radius: 9px;
+      background: color-mix(in oklch, var(--paper) 88%, oklch(99% 0.006 245));
     }
-    .step small {
-      display: block;
-      margin-top: 6px;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    .allowed { border-top: 4px solid var(--green); }
-    .warned { border-top: 4px solid var(--amber); }
-    .quarantined { border-top: 4px solid var(--violet); }
-    .blocked { border-top: 4px solid var(--red); }
+    .decision-row strong { display: block; font-size: 16px; }
+    .decision-row span { display: block; color: var(--muted); }
+    .decision-row[data-state="allow"] { background: color-mix(in oklch, var(--green) 8%, var(--paper)); }
+    .decision-row[data-state="quarantine"] { background: color-mix(in oklch, var(--violet) 8%, var(--paper)); }
+    .decision-row[data-state="block"] { background: color-mix(in oklch, var(--red) 7%, var(--paper)); }
     .terminal {
       overflow: auto;
       margin: 0;
-      padding: 17px;
-      border: 1px solid #1f2937;
-      border-radius: 8px;
-      background: #0c1118;
-      color: #eef3ff;
+      padding: 18px;
+      border: 1px solid color-mix(in oklch, var(--line) 65%, var(--ink));
+      border-radius: 10px;
+      background: var(--console);
+      color: oklch(93% 0.015 245);
       font-size: 14px;
-      line-height: 1.48;
+      line-height: 1.52;
     }
     .note {
       margin-top: 14px;
       padding: 13px 14px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 9px;
       color: var(--muted);
-      background: var(--panel);
+      background: color-mix(in oklch, var(--paper-2) 88%, oklch(99% 0.006 245));
       font-size: 14px;
     }
     .scope {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
     }
-    .list {
-      margin: 0;
-      padding-left: 19px;
-      color: var(--muted);
+    .scope-block {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in oklch, var(--paper) 88%, oklch(99% 0.006 245));
     }
+    .scope-block h3 { margin: 0 0 12px; font-size: 22px; }
+    .list { margin: 0; padding-left: 19px; color: var(--muted); }
     .list li + li { margin-top: 8px; }
-    .screens {
+    .showcase {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: minmax(0, 1fr) 300px;
       gap: 18px;
+      align-items: start;
     }
-    .caption { margin-top: 8px; color: var(--muted); font-size: 14px; }
-    footer { padding: 28px 0; color: var(--muted); font-size: 14px; }
-    @media (max-width: 900px) {
-      .hero-grid, .grid, .screens, .split, .scope { grid-template-columns: 1fr; }
-      .hero { padding-top: 46px; }
-      .flow { grid-template-columns: 1fr; }
+    .showcase-stage {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: color-mix(in oklch, var(--paper-2) 86%, oklch(99% 0.006 245));
+      box-shadow: 0 22px 70px rgba(33, 50, 72, 0.14);
+    }
+    .showcase-tabs {
+      display: grid;
+      gap: 10px;
+    }
+    .showcase-tab {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      text-align: left;
+      color: var(--muted);
+      background: color-mix(in oklch, var(--paper) 88%, oklch(99% 0.006 245));
+      cursor: pointer;
+      font: inherit;
+    }
+    .showcase-tab strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 15px;
+    }
+    .showcase-tab.active {
+      border-color: color-mix(in oklch, var(--blue) 60%, var(--line));
+      background: color-mix(in oklch, var(--blue) 8%, var(--paper));
+    }
+    .caption { margin-top: 9px; color: var(--muted); font-size: 14px; }
+    footer {
+      padding: 28px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 980px) {
+      .hero-grid, .decision-layout, .proof, .scope, .showcase { grid-template-columns: 1fr; }
       .links { display: none; }
       h1 { font-size: 42px; }
+      .decision-row { grid-template-columns: 1fr; gap: 6px; }
     }
   </style>
 </head>
 <body>
   <header>
     <nav class="wrap">
-      <a class="brand" href="index.html" aria-label="WriteFence home"><span class="mark">WF</span><span>WriteFence</span></a>
+      <a class="brand" href="index.html" aria-label="WriteFence home"><img src="assets/brand/writefence-mark.png" alt=""><span>WriteFence</span></a>
       <div class="links">
         <a href="quickstart.html">Quickstart</a>
         <a href="configuration.html">Configuration</a>
         <a href="compatibility.html">Compatibility</a>
-        <a href="../README.md">README</a>
+        <a href="https://github.com/writefence/writefence#readme">README</a>
       </div>
     </nav>
   </header>
@@ -259,7 +333,7 @@
       <div class="wrap hero-grid">
         <div>
           <p class="eyebrow">Local-first alpha</p>
-          <h1>Decide what gets written to agent memory.</h1>
+          <h1>Control agent memory writes.</h1>
           <p class="lead">WriteFence sits in front of a memory store and evaluates every write before it becomes durable state.</p>
           <p class="sublead">Block malformed writes, quarantine risky ones for review, keep an audit trail, and replay policy changes over prior memory traffic.</p>
           <div class="actions">
@@ -267,15 +341,17 @@
             <a class="button" href="compatibility.html">Check compatibility</a>
             <a class="button" href="configuration.html">Tune policy</a>
           </div>
-          <div class="status-line" aria-label="alpha scope">
+          <div class="pills" aria-label="alpha package">
             <span class="pill">Go proxy</span>
             <span class="pill">Operator CLI</span>
             <span class="pill">Local UI</span>
             <span class="pill">WAL replay</span>
           </div>
         </div>
-        <div class="shot">
-          <img src="assets/ui/writefence-ui-overview.png" alt="WriteFence local operator UI overview">
+        <div class="hero-panel">
+          <div class="shot">
+            <img src="assets/ui/writefence-ui-overview.png" alt="WriteFence overview showing allowed, warned, quarantined, and blocked memory-write decisions">
+          </div>
         </div>
       </div>
     </div>
@@ -284,37 +360,50 @@
       <div class="wrap">
         <h2>Memory writes need an admission path</h2>
         <p class="section-lead">Most agent-memory tooling focuses on storing and retrieving more context. WriteFence focuses on the write path: what should be allowed to become memory in the first place.</p>
-        <div class="grid">
-          <div class="feature">
-            <h3>Block bad writes</h3>
-            <p>Reject malformed or policy-breaking memory before it reaches long-term state, with a machine-readable decision and retry guidance.</p>
+        <div class="proof">
+          <div>
+            <h3>Reject bad writes</h3>
+            <p>Malformed, policy-breaking, or sensitive memory is stopped before it reaches long-term state.</p>
           </div>
-          <div class="feature">
-            <h3>Review risky writes</h3>
-            <p>Hold review-required writes locally until an operator approves or rejects them. Semantic duplicate quarantine is optional and dependency-backed.</p>
+          <div>
+            <h3>Review uncertain writes</h3>
+            <p>Review-required memory stays local until an operator approves, rejects, or merges it with existing context.</p>
           </div>
-          <div class="feature">
+          <div>
             <h3>Replay policy changes</h3>
-            <p>Use the WAL to see how historical writes would behave under the current rule set before changing policy in front of real traffic.</p>
+            <p>The WAL shows how prior writes would evaluate under the current rule set before policy changes land.</p>
           </div>
         </div>
       </div>
     </section>
 
     <section>
-      <div class="wrap">
-        <div class="split">
-          <div>
-            <h2>Not a memory database</h2>
-            <p class="section-lead">WriteFence is not a vector database, retrieval layer, hosted service, or autonomous memory editor. It is a small control point before persistence.</p>
-            <p class="section-lead">The alpha is intentionally narrow: local HTTP write admission, audit logs, quarantine review, replay, and operator tooling.</p>
+      <div class="wrap decision-layout">
+        <div>
+          <h2>Write admission, not storage</h2>
+          <p class="section-lead">WriteFence is not a vector database, retrieval layer, hosted service, or autonomous memory editor. It is a small control point before persistence.</p>
+          <p class="section-lead">The alpha is intentionally narrow: local HTTP write admission, audit logs, quarantine review, replay, and operator tooling.</p>
+        </div>
+        <div class="decision-path" aria-label="WriteFence decision path">
+          <div class="decision-row">
+            <strong>Attempt</strong>
+            <span>An agent, MCP client, or app sends a memory write to the local proxy.</span>
           </div>
-          <div class="flow">
-            <div class="step">Agent or app<small>Attempts a memory write</small></div>
-            <div class="step">WriteFence<small>Evaluates local rules</small></div>
-            <div class="step allowed">Allowed / warned<small>Forwarded upstream</small></div>
-            <div class="step quarantined">Quarantined<small>Held for review</small></div>
-            <div class="step blocked">Blocked<small>Rejected with ADC</small></div>
+          <div class="decision-row">
+            <strong>Evaluate</strong>
+            <span>WriteFence applies deterministic local rules and optional semantic checks before persistence.</span>
+          </div>
+          <div class="decision-row" data-state="allow">
+            <strong>Allow or warn</strong>
+            <span>Safe writes are forwarded upstream; warning decisions keep the audit trail visible.</span>
+          </div>
+          <div class="decision-row" data-state="quarantine">
+            <strong>Quarantine</strong>
+            <span>Review-required writes stay local until an operator approves or rejects them.</span>
+          </div>
+          <div class="decision-row" data-state="block">
+            <strong>Block</strong>
+            <span>Policy-breaking writes are rejected with a machine-readable admission decision.</span>
           </div>
         </div>
       </div>
@@ -340,9 +429,40 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
 
     <section>
       <div class="wrap">
+        <h2>Operator views</h2>
+        <p class="section-lead">The local UI is built for repeated operator work: inspect decisions, review suggested fixes, replay the WAL, and confirm runtime configuration.</p>
+        <div class="showcase" aria-label="WriteFence operator UI screenshots">
+          <div class="showcase-stage">
+            <div class="shot"><img id="showcase-image" src="assets/ui/writefence-ui-violations.png" alt="WriteFence violations view with suggested fix and admission decision details"></div>
+            <div class="caption" id="showcase-caption">Violations show the decision, rule, reason, trace ID, and suggested fix for review.</div>
+          </div>
+          <div class="showcase-tabs">
+            <button class="showcase-tab active" type="button" data-image="assets/ui/writefence-ui-violations.png" data-alt="WriteFence violations view with suggested fix and admission decision details" data-caption="Violations show the decision, rule, reason, trace ID, and suggested fix for review.">
+              <strong>Violations</strong>
+              Suggested fixes and full admission details.
+            </button>
+            <button class="showcase-tab" type="button" data-image="assets/ui/writefence-ui-replay.png" data-alt="WriteFence replay view comparing old and new policy decisions" data-caption="Replay compares prior WAL entries against the current rule set before policy changes land.">
+              <strong>Replay</strong>
+              See policy diffs before changing rules.
+            </button>
+            <button class="showcase-tab" type="button" data-image="assets/ui/writefence-ui-quarantine.png" data-alt="WriteFence quarantine view with pending and rejected writes" data-caption="Quarantine keeps review-required writes local until an operator approves or rejects them.">
+              <strong>Quarantine</strong>
+              Review pending writes before persistence.
+            </button>
+            <button class="showcase-tab" type="button" data-image="assets/ui/writefence-ui-config.png" data-alt="WriteFence runtime configuration view" data-caption="Config exposes the effective local proxy and rule settings operators are running.">
+              <strong>Config</strong>
+              Confirm effective local runtime settings.
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
         <h2>Alpha scope</h2>
         <div class="scope">
-          <div class="feature">
+          <div class="scope-block">
             <h3>Included now</h3>
             <ul class="list">
               <li>HTTP reverse proxy for document writes.</li>
@@ -350,7 +470,7 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
               <li>Local WAL, violations log, quarantine log, replay, CLI, MCP server, and operator UI.</li>
             </ul>
           </div>
-          <div class="feature">
+          <div class="scope-block">
             <h3>Not in this alpha</h3>
             <ul class="list">
               <li>Hosted SaaS, multi-tenant auth, billing, or compliance claims.</li>
@@ -361,27 +481,23 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
         </div>
       </div>
     </section>
-
-    <section>
-      <div class="wrap">
-        <h2>Operator views</h2>
-        <p class="section-lead">The local UI is built for repeated operator work: inspect decisions, review quarantine, replay the WAL, and confirm runtime configuration.</p>
-        <div class="screens">
-          <div>
-            <div class="shot"><img src="assets/ui/writefence-ui-quarantine.png" alt="WriteFence quarantine review table"></div>
-            <div class="caption">Quarantine review keeps risky writes out of durable memory until approved.</div>
-          </div>
-          <div>
-            <div class="shot"><img src="assets/ui/writefence-ui-replay.png" alt="WriteFence replay policy diff view"></div>
-            <div class="caption">Replay shows how previous writes evaluate under the current policy.</div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer>
-    <div class="wrap">Apache-2.0. Local-first alpha software for agent memory write governance.</div>
+    <div class="wrap">Apache-2.0. Local-first alpha software for agent memory write governance. <a href="https://github.com/writefence/writefence">GitHub</a> / <a href="mailto:security@writefence.dev">Security</a></div>
   </footer>
+  <script>
+    const showcaseImage = document.querySelector("#showcase-image");
+    const showcaseCaption = document.querySelector("#showcase-caption");
+    document.querySelectorAll(".showcase-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".showcase-tab").forEach((item) => item.classList.remove("active"));
+        tab.classList.add("active");
+        showcaseImage.src = tab.dataset.image;
+        showcaseImage.alt = tab.dataset.alt;
+        showcaseCaption.textContent = tab.dataset.caption;
+      });
+    });
+  </script>
 </body>
 </html>

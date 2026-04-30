@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WriteFence Quickstart</title>
+  <meta name="description" content="Run the WriteFence local alpha with the included mock memory store.">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: oklch(98.5% 0.008 245);
+      --ink: oklch(18% 0.018 245);
+      --muted: oklch(43% 0.032 248);
+      --line: oklch(85% 0.018 248);
+      --line-strong: oklch(72% 0.035 248);
+      --console: oklch(17% 0.018 245);
+      --blue: oklch(58% 0.20 255);
+      --max: 920px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Aptos, "Segoe UI Variable", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    header { border-bottom: 1px solid var(--line); }
+    nav { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 760; font-size: 18px; }
+    .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; }
+    .links { display: flex; gap: 18px; font-size: 14px; }
+    main { padding: clamp(42px, 7vw, 72px) 0 72px; }
+    .eyebrow { margin: 0 0 10px; color: var(--blue); font-size: 12px; font-weight: 820; letter-spacing: 0.08em; text-transform: uppercase; }
+    h1 { margin: 0 0 18px; font-size: clamp(42px, 7vw, 62px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 38px 0 10px; font-size: 25px; line-height: 1.15; }
+    p, li { color: var(--muted); }
+    pre {
+      overflow: auto;
+      padding: 18px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: var(--console);
+      color: oklch(93% 0.015 245);
+      font-size: 14px;
+      line-height: 1.52;
+    }
+    code { font-family: "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.94em; }
+    .note { padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); background: oklch(96.2% 0.012 245); }
+    @media (max-width: 760px) { .links { display: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="index.html" aria-label="WriteFence home"><img src="assets/brand/writefence-mark.png" alt=""><span>WriteFence</span></a>
+      <div class="links">
+        <a href="quickstart.html">Quickstart</a>
+        <a href="configuration.html">Configuration</a>
+        <a href="compatibility.html">Compatibility</a>
+        <a href="https://github.com/writefence/writefence">GitHub</a>
+      </div>
+    </nav>
+  </header>
+  <main class="wrap">
+    <p class="eyebrow">Local alpha</p>
+    <h1>Run WriteFence locally.</h1>
+    <p>This quickstart runs WriteFence with a tiny mock memory store. It does not require LightRAG, Qdrant, Ollama, auth, billing, or hosted services.</p>
+
+    <h2>1. Build the binaries</h2>
+    <pre><code>go build -o bin/writefence ./cmd/writefence
+go build -o bin/writefence-cli ./cmd/writefence-cli</code></pre>
+
+    <h2>2. Start the mock memory store</h2>
+    <pre><code>go run ./demo/mock-memory-store.go -addr 127.0.0.1:9621</code></pre>
+    <p>The mock store accepts <code>POST /documents/text</code> and keeps accepted writes in a local JSONL file under <code>/tmp/writefence-mock-store</code> by default.</p>
+
+    <h2>3. Start WriteFence</h2>
+    <pre><code>WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
+  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
+    <p>Open the local operator UI at <code>http://127.0.0.1:9622/_writefence</code>.</p>
+
+    <h2>4. Run the demo flow</h2>
+    <pre><code>WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
+  WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl \
+  ./demo/canonical-demo.sh</code></pre>
+    <ul>
+      <li>A blocked write with a suggested fix.</li>
+      <li>A corrected write that is admitted.</li>
+      <li>Replay over the local WAL.</li>
+    </ul>
+    <div class="note">Semantic quarantine requires embeddings plus Qdrant. Without those optional services, the demo prints a note and continues with deterministic local rules.</div>
+
+    <h2>5. Load deterministic UI data</h2>
+    <pre><code>WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo
+WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo \
+  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
+  </main>
+</body>
+</html>

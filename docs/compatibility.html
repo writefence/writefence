@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WriteFence Compatibility</title>
+  <meta name="description" content="What WriteFence local alpha supports today.">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: oklch(98.5% 0.008 245);
+      --ink: oklch(18% 0.018 245);
+      --muted: oklch(43% 0.032 248);
+      --line: oklch(85% 0.018 248);
+      --line-strong: oklch(72% 0.035 248);
+      --console: oklch(17% 0.018 245);
+      --blue: oklch(58% 0.20 255);
+      --max: 920px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: Aptos, "Segoe UI Variable", "Helvetica Neue", Arial, sans-serif; line-height: 1.55; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    header { border-bottom: 1px solid var(--line); }
+    nav { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 760; font-size: 18px; }
+    .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; }
+    .links { display: flex; gap: 18px; font-size: 14px; }
+    main { padding: clamp(42px, 7vw, 72px) 0 72px; }
+    .eyebrow { margin: 0 0 10px; color: var(--blue); font-size: 12px; font-weight: 820; letter-spacing: 0.08em; text-transform: uppercase; }
+    h1 { margin: 0 0 18px; font-size: clamp(42px, 7vw, 62px); line-height: 1; letter-spacing: 0; }
+    h2 { margin: 38px 0 10px; font-size: 25px; line-height: 1.15; }
+    p, li { color: var(--muted); }
+    pre { overflow: auto; padding: 18px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--console); color: oklch(93% 0.015 245); font-size: 14px; line-height: 1.52; }
+    code { font-family: "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.94em; }
+    @media (max-width: 760px) { .links { display: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="index.html" aria-label="WriteFence home"><img src="assets/brand/writefence-mark.png" alt=""><span>WriteFence</span></a>
+      <div class="links">
+        <a href="quickstart.html">Quickstart</a>
+        <a href="configuration.html">Configuration</a>
+        <a href="compatibility.html">Compatibility</a>
+        <a href="https://github.com/writefence/writefence">GitHub</a>
+      </div>
+    </nav>
+  </header>
+  <main class="wrap">
+    <p class="eyebrow">Compatibility</p>
+    <h1>Small adapter surface, explicit write path.</h1>
+    <p>WriteFence is a local admission controller for memory-write traffic. The alpha target is intentionally narrow: put WriteFence in front of a memory store that accepts HTTP document writes, then inspect decisions through the CLI, WAL, quarantine log, replay engine, and local UI.</p>
+
+    <h2>Works today</h2>
+    <ul>
+      <li>HTTP reverse-proxy deployment.</li>
+      <li>LightRAG-style <code>POST /documents/text</code> writes.</li>
+      <li>LightRAG-style paginated reads and delete calls for local dedup checks.</li>
+      <li>Local WAL, violation logs, quarantine review, replay, and operator UI.</li>
+      <li>Optional semantic dedup with Ollama embeddings and Qdrant.</li>
+      <li>MCP server exposing operator tools.</li>
+    </ul>
+
+    <h2>Expected upstream endpoints</h2>
+    <p>Write admission is enforced on:</p>
+    <pre><code>POST /documents/text</code></pre>
+    <p>The accepted request body should include:</p>
+    <pre><code>{
+  "text": "[STATUS] memory text",
+  "description": "optional description"
+}</code></pre>
+    <p>For dedup support, the upstream should also provide:</p>
+    <pre><code>POST /documents/paginated
+DELETE /documents/delete_document</code></pre>
+    <p>Other paths are proxied through without admission decisions.</p>
+
+    <h2>Optional semantic dedup</h2>
+    <pre><code>./bin/writefence \
+  --addr 127.0.0.1:9622 \
+  --upstream http://127.0.0.1:9621 \
+  --embed-url http://127.0.0.1:11434 \
+  --qdrant-url http://127.0.0.1:6333</code></pre>
+    <p>If either dependency is absent, semantic dedup is disabled and WriteFence keeps running with deterministic local rules.</p>
+
+    <h2>Not in alpha scope</h2>
+    <ul>
+      <li>Hosted SaaS, billing, multi-tenant administration, or user authentication.</li>
+      <li>Cloud-managed memory stores.</li>
+      <li>Generic adapters for every memory API shape.</li>
+    </ul>
+    <p>Adapters for additional memory backends should normalize the backend's write path into WriteFence's document-write contract, then let the existing admission, WAL, quarantine, replay, and UI surfaces do the work.</p>
+  </main>
+</body>
+</html>
