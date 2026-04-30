@@ -248,7 +248,11 @@
       line-height: 0.97;
       letter-spacing: 0;
     }
-    h1 span { color: var(--ink-3); }
+    h1 .muted { color: var(--ink-3); }
+    h1 .accent-word {
+      color: var(--ink);
+      text-shadow: 0 0 22px color-mix(in oklch, var(--accent) 16%, transparent);
+    }
     .hero-sub {
       max-width: 54ch;
       margin: 0 0 28px;
@@ -272,7 +276,7 @@
     .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
     .hero-bento {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       font-family: var(--mono);
     }
@@ -427,6 +431,16 @@
     .bento-card.allowed { border-top: 2px solid var(--allowed); }
     .bento-card.quarantined { border-top: 2px solid var(--quarantined); }
     .bento-card.blocked { border-top: 2px solid var(--blocked); }
+    .bento-card.easter {
+      border-top: 2px solid var(--accent);
+      background:
+        linear-gradient(135deg, color-mix(in oklch, var(--accent) 9%, transparent), transparent 62%),
+        color-mix(in oklch, var(--bg-2) 82%, var(--paper));
+    }
+    .bento-card.easter .bento-value {
+      font-size: 16px;
+      line-height: 1.25;
+    }
     .rule-strip {
       grid-column: 1 / -1;
       display: grid;
@@ -460,18 +474,15 @@
       align-items: baseline;
       margin-bottom: 46px;
     }
-    .section-head.centered {
-      grid-template-columns: 1fr;
-      gap: 14px;
-      max-width: 780px;
-      margin-right: auto;
-      margin-left: auto;
-      text-align: center;
+    .section-head.feature {
+      grid-template-columns: 190px minmax(0, 780px);
+      justify-content: start;
+      text-align: left;
     }
-    .section-head.centered .section-title,
-    .section-head.centered .section-lede {
-      margin-right: auto;
-      margin-left: auto;
+    .section-head.feature .section-title,
+    .section-head.feature .section-lede {
+      margin-right: 0;
+      margin-left: 0;
     }
     .section-num {
       color: var(--ink-4);
@@ -1126,7 +1137,7 @@
         </div>
         <div class="hero-grid">
           <div>
-            <h1>Admission control for agent memory.</h1>
+            <h1>Admission control <span class="muted">for</span> <span class="accent-word">agent memory.</span></h1>
             <p class="hero-sub">WriteFence sits between agents, MCP clients, apps, and persistent memory stores. It evaluates every write before bad context becomes durable state.</p>
             <div class="hero-facts" aria-label="WriteFence alpha facts">
               <div><b>local HTTP proxy</b> / runs in front of a LightRAG-compatible store</div>
@@ -1189,6 +1200,11 @@
               <div class="bento-value">2</div>
               <div class="bento-detail">policy-breaking writes returned structured ADC</div>
             </div>
+            <div class="bento-card easter" title="Tiny reminder for agents and humans: inspect before persistence.">
+              <div class="bento-kicker">developer note</div>
+              <div class="bento-value">write once,<br>inspect first</div>
+              <div class="bento-detail">trace IDs beat memory archaeology</div>
+            </div>
             <div class="rule-strip">
               <div class="rule-chip"><b>prefix_required</b>[STATUS], [DECISION], [RUNBOOK]</div>
               <div class="rule-chip"><b>context_shield</b>sensitive context is rejected before persistence</div>
@@ -1201,7 +1217,7 @@
 
     <section id="outcomes">
       <div class="container">
-        <div class="section-head centered">
+        <div class="section-head feature">
           <div class="section-num">/02 / outcomes</div>
           <div>
             <h2 class="section-title">Four decisions. One contract.</h2>
@@ -1275,7 +1291,7 @@
 
     <section id="operator">
       <div class="container">
-        <div class="section-head centered">
+        <div class="section-head feature">
           <div class="section-num">/04 / operator</div>
           <div>
             <h2 class="section-title">Inspect what agents tried to write.</h2>
