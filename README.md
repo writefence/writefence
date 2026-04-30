@@ -26,13 +26,11 @@ Agent / MCP client / app
           v
     WriteFence proxy :9622
           |
-          +--> allowed / warned      -> forward to store
+          +-- allowed / warned  ---> LightRAG or compatible store
           |
-          +--> quarantined           -> local quarantine log only
+          +-- quarantined       ---> local quarantine log only
           |
-          +--> blocked               -> reject with ADC
-          v
-   LightRAG or compatible store
+          +-- blocked           ---> reject with ADC
 ```
 
 ## Admission Decision Contract
@@ -175,16 +173,16 @@ See [docs/configuration.md](docs/configuration.md).
 ## Repository layout
 
 ```text
-cmd/writefence/              proxy server
-cmd/writefence-cli/          operator CLI
-cmd/writefence-mcp/          MCP server
-internal/admission/     admission decision contract
-internal/proxy/         HTTP reverse proxy
-internal/quarantine/    local quarantine workflow
-internal/replay/        WAL replay engine
-internal/rules/         built-in policy rules
-internal/wal/           write-ahead log
-demo/                   canonical demo
+cmd/writefence/            proxy server
+cmd/writefence-cli/        operator CLI
+cmd/writefence-mcp/        MCP server
+internal/admission/        admission decision contract
+internal/proxy/            HTTP reverse proxy
+internal/quarantine/       local quarantine workflow
+internal/replay/           WAL replay engine
+internal/rules/            built-in policy rules
+internal/wal/              write-ahead log
+demo/                      canonical demo
 ```
 
 ## Status
