@@ -93,6 +93,40 @@
     p, li { max-width: 78ch; color: var(--muted); }
     pre { overflow: auto; padding: 18px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--console); color: oklch(93% 0.015 245); font-size: 14px; line-height: 1.52; box-shadow: 0 18px 52px rgba(33, 50, 72, 0.10); }
     code { font-family: "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.94em; }
+    :root {
+      --paper: oklch(97.5% 0.011 82);
+      --ink: oklch(19% 0.015 82);
+      --muted: oklch(34% 0.018 82);
+      --line: oklch(82% 0.018 82);
+      --line-strong: oklch(70% 0.02 82);
+      --console: oklch(15% 0.018 245);
+      --blue: oklch(70% 0.16 220);
+      --note: oklch(94.8% 0.015 82);
+    }
+    [data-theme="dark"] {
+      --paper: oklch(16% 0.018 245);
+      --ink: oklch(92% 0.012 245);
+      --muted: oklch(78% 0.016 245);
+      --line: oklch(31% 0.024 245);
+      --line-strong: oklch(42% 0.028 245);
+      --console: oklch(12% 0.018 245);
+      --blue: oklch(76% 0.14 220);
+      --note: oklch(20% 0.02 245);
+    }
+    body {
+      background:
+        linear-gradient(90deg, color-mix(in oklch, var(--line) 45%, transparent) 1px, transparent 1px),
+        linear-gradient(180deg, color-mix(in oklch, var(--line) 38%, transparent) 1px, transparent 1px),
+        var(--paper);
+      background-size: 64px 64px;
+    }
+    header { background: color-mix(in oklch, var(--paper) 88%, transparent); }
+    .brand, .links, .theme-toggle, code, pre { font-family: "Cascadia Code", "SFMono-Regular", Menlo, Consolas, monospace; }
+    .links a, .theme-toggle { border-radius: 3px; font-size: 12px; }
+    .links a[aria-current="page"] { border-color: var(--blue); background: color-mix(in oklch, var(--blue) 10%, var(--paper)); }
+    h1 { max-width: 13ch; font-weight: 760; }
+    h2 { border-top-style: dashed; }
+    pre { border-radius: 3px; box-shadow: none; }
     @media (max-width: 760px) { .links a { display: none; } }
   </style>
 </head>
