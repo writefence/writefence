@@ -128,11 +128,12 @@ The repo includes a single demo script:
 
 It shows:
 1. block -> suggested fix -> corrected write admitted
-2. quarantine -> human approve/reject
+2. optional semantic quarantine -> human approve/reject when semantic dedup dependencies are configured
 3. replay -> policy diff over WAL
 
 Notes:
 - quarantine requires semantic dedup to be enabled on the running proxy
+- without embeddings and Qdrant, the demo prints a note and continues with deterministic local rules
 - the script assumes WriteFence is already running on `http://127.0.0.1:9622`
 
 ## Local UI Screenshots
