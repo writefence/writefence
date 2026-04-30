@@ -4,20 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WriteFence</title>
-  <meta name="description" content="A local admission controller for agent memory writes.">
+  <meta name="description" content="Local admission control for AI agent memory writes.">
   <style>
     :root {
       color-scheme: light;
-      --ink: #14161a;
-      --muted: #5d6573;
+      --ink: #111418;
+      --muted: #5a6370;
+      --quiet: #7a8492;
       --line: #d9dee7;
       --panel: #f7f8fa;
-      --blue: #1f5eff;
+      --panel-strong: #eef3f8;
+      --dark: #070a0f;
+      --blue: #1463ff;
+      --cyan: #09aeea;
       --green: #15803d;
       --red: #b42318;
       --amber: #a15c07;
       --violet: #6d28d9;
-      --max: 1080px;
+      --max: 1120px;
     }
     * { box-sizing: border-box; }
     body {
@@ -29,58 +33,116 @@
     }
     a { color: var(--blue); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.94em;
+    }
     .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
     header {
       border-bottom: 1px solid var(--line);
-      background: #fff;
+      background: rgba(255, 255, 255, 0.96);
       position: sticky;
       top: 0;
       z-index: 2;
+      backdrop-filter: blur(10px);
     }
     nav {
-      height: 64px;
+      min-height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
     }
-    .brand { font-weight: 760; font-size: 18px; letter-spacing: 0; }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 760;
+      font-size: 18px;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      color: #fff;
+      background: var(--dark);
+      font-size: 13px;
+      font-weight: 800;
+    }
     .links { display: flex; gap: 18px; align-items: center; color: var(--muted); font-size: 14px; }
     .hero {
-      padding: 72px 0 48px;
+      padding: 76px 0 54px;
       border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
     }
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
-      gap: 42px;
+      grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+      gap: 44px;
       align-items: center;
+    }
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
     h1 {
       margin: 0 0 18px;
-      font-size: clamp(42px, 7vw, 78px);
-      line-height: 0.96;
+      font-size: clamp(40px, 6.4vw, 76px);
+      line-height: 0.98;
       letter-spacing: 0;
     }
     .lead {
-      margin: 0 0 26px;
+      margin: 0 0 22px;
       font-size: 20px;
+      color: var(--muted);
+      max-width: 640px;
+    }
+    .sublead {
+      margin: 0 0 28px;
       color: var(--muted);
       max-width: 620px;
     }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
     .button {
       display: inline-flex;
       align-items: center;
-      min-height: 42px;
-      padding: 10px 14px;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 15px;
       border: 1px solid var(--line);
       border-radius: 6px;
-      font-weight: 650;
+      font-weight: 680;
       color: var(--ink);
       background: #fff;
     }
     .button.primary { color: #fff; border-color: var(--blue); background: var(--blue); }
+    .button:hover { text-decoration: none; border-color: #aeb8c7; }
+    .button.primary:hover { border-color: #0f51d5; background: #0f51d5; }
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      color: var(--quiet);
+      font-size: 13px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.76);
+    }
     .shot {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -89,8 +151,9 @@
       box-shadow: 0 24px 70px rgba(20, 22, 26, 0.12);
     }
     .shot img { display: block; width: 100%; height: auto; }
-    section { padding: 54px 0; border-bottom: 1px solid var(--line); }
-    h2 { margin: 0 0 18px; font-size: 30px; line-height: 1.12; letter-spacing: 0; }
+    section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+    h2 { margin: 0 0 14px; font-size: 31px; line-height: 1.12; letter-spacing: 0; }
+    .section-lead { margin: 0 0 22px; max-width: 760px; color: var(--muted); font-size: 17px; }
     .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .feature {
       border: 1px solid var(--line);
@@ -100,6 +163,12 @@
     }
     .feature h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: 0; }
     .feature p { margin: 0; color: var(--muted); }
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr);
+      gap: 34px;
+      align-items: start;
+    }
     .flow {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -111,9 +180,9 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 14px;
-      min-height: 92px;
+      min-height: 96px;
       background: var(--panel);
-      font-weight: 700;
+      font-weight: 740;
     }
     .step small {
       display: block;
@@ -125,15 +194,37 @@
     .warned { border-top: 4px solid var(--amber); }
     .quarantined { border-top: 4px solid var(--violet); }
     .blocked { border-top: 4px solid var(--red); }
-    pre {
+    .terminal {
       overflow: auto;
-      padding: 16px;
-      border: 1px solid var(--line);
+      margin: 0;
+      padding: 17px;
+      border: 1px solid #1f2937;
       border-radius: 8px;
-      background: #101318;
+      background: #0c1118;
       color: #eef3ff;
       font-size: 14px;
+      line-height: 1.48;
     }
+    .note {
+      margin-top: 14px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 14px;
+    }
+    .scope {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .list {
+      margin: 0;
+      padding-left: 19px;
+      color: var(--muted);
+    }
+    .list li + li { margin-top: 8px; }
     .screens {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -141,18 +232,19 @@
     }
     .caption { margin-top: 8px; color: var(--muted); font-size: 14px; }
     footer { padding: 28px 0; color: var(--muted); font-size: 14px; }
-    @media (max-width: 860px) {
-      .hero-grid, .grid, .screens { grid-template-columns: 1fr; }
-      .hero { padding-top: 44px; }
+    @media (max-width: 900px) {
+      .hero-grid, .grid, .screens, .split, .scope { grid-template-columns: 1fr; }
+      .hero { padding-top: 46px; }
       .flow { grid-template-columns: 1fr; }
       .links { display: none; }
+      h1 { font-size: 42px; }
     }
   </style>
 </head>
 <body>
   <header>
     <nav class="wrap">
-      <div class="brand">WriteFence</div>
+      <a class="brand" href="index.html" aria-label="WriteFence home"><span class="mark">WF</span><span>WriteFence</span></a>
       <div class="links">
         <a href="quickstart.html">Quickstart</a>
         <a href="configuration.html">Configuration</a>
@@ -166,11 +258,20 @@
     <div class="hero">
       <div class="wrap hero-grid">
         <div>
-          <h1>WriteFence</h1>
-          <p class="lead">A local admission controller for agent memory writes. Put it in front of your memory store, review every write decision, and replay policy changes before bad context becomes durable state.</p>
+          <p class="eyebrow">Local-first alpha</p>
+          <h1>Decide what gets written to agent memory.</h1>
+          <p class="lead">WriteFence sits in front of a memory store and evaluates every write before it becomes durable state.</p>
+          <p class="sublead">Block malformed writes, quarantine risky ones for review, keep an audit trail, and replay policy changes over prior memory traffic.</p>
           <div class="actions">
             <a class="button primary" href="quickstart.html">Run locally</a>
             <a class="button" href="compatibility.html">Check compatibility</a>
+            <a class="button" href="configuration.html">Tune policy</a>
+          </div>
+          <div class="status-line" aria-label="alpha scope">
+            <span class="pill">Go proxy</span>
+            <span class="pill">Operator CLI</span>
+            <span class="pill">Local UI</span>
+            <span class="pill">WAL replay</span>
           </div>
         </div>
         <div class="shot">
@@ -182,18 +283,19 @@
     <section>
       <div class="wrap">
         <h2>Memory writes need an admission path</h2>
+        <p class="section-lead">Most agent-memory tooling focuses on storing and retrieving more context. WriteFence focuses on the write path: what should be allowed to become memory in the first place.</p>
         <div class="grid">
           <div class="feature">
-            <h3>Block malformed writes</h3>
-            <p>Reject bad memory before it reaches long-term state, with a machine-readable decision and suggested fix.</p>
+            <h3>Block bad writes</h3>
+            <p>Reject malformed or policy-breaking memory before it reaches long-term state, with a machine-readable decision and retry guidance.</p>
           </div>
           <div class="feature">
-            <h3>Quarantine risky writes</h3>
-            <p>Hold near-duplicates or review-required writes locally until a human approves or rejects them.</p>
+            <h3>Review risky writes</h3>
+            <p>Hold review-required writes locally until an operator approves or rejects them. Semantic duplicate quarantine is optional and dependency-backed.</p>
           </div>
           <div class="feature">
             <h3>Replay policy changes</h3>
-            <p>Use the WAL to see how historical writes would behave under the current rule set.</p>
+            <p>Use the WAL to see how historical writes would behave under the current rule set before changing policy in front of real traffic.</p>
           </div>
         </div>
       </div>
@@ -201,13 +303,19 @@
 
     <section>
       <div class="wrap">
-        <h2>Local-first architecture</h2>
-        <div class="flow">
-          <div class="step">Agent or app<small>Attempts a memory write</small></div>
-          <div class="step">WriteFence<small>Evaluates local rules</small></div>
-          <div class="step allowed">Allowed / warned<small>Forwarded upstream</small></div>
-          <div class="step quarantined">Quarantined<small>Held for review</small></div>
-          <div class="step blocked">Blocked<small>Rejected with ADC</small></div>
+        <div class="split">
+          <div>
+            <h2>Not a memory database</h2>
+            <p class="section-lead">WriteFence is not a vector database, retrieval layer, hosted service, or autonomous memory editor. It is a small control point before persistence.</p>
+            <p class="section-lead">The alpha is intentionally narrow: local HTTP write admission, audit logs, quarantine review, replay, and operator tooling.</p>
+          </div>
+          <div class="flow">
+            <div class="step">Agent or app<small>Attempts a memory write</small></div>
+            <div class="step">WriteFence<small>Evaluates local rules</small></div>
+            <div class="step allowed">Allowed / warned<small>Forwarded upstream</small></div>
+            <div class="step quarantined">Quarantined<small>Held for review</small></div>
+            <div class="step blocked">Blocked<small>Rejected with ADC</small></div>
+          </div>
         </div>
       </div>
     </section>
@@ -215,7 +323,8 @@
     <section>
       <div class="wrap">
         <h2>Three-minute local preview</h2>
-        <pre><code>go build -o bin/writefence ./cmd/writefence
+        <p class="section-lead">Run the alpha with the included mock memory store. No LightRAG, Qdrant, Ollama, auth, billing, or hosted service is required for the default preview.</p>
+        <pre class="terminal"><code>go build -o bin/writefence ./cmd/writefence
 go build -o bin/writefence-cli ./cmd/writefence-cli
 go run ./demo/mock-memory-store.go -addr 127.0.0.1:9621
 
@@ -225,13 +334,38 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
 WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
   WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl \
   ./demo/canonical-demo.sh</code></pre>
-        <p class="caption">Open <code>http://127.0.0.1:9622/_writefence</code> for the local operator UI.</p>
+        <div class="note">Open <code>http://127.0.0.1:9622/_writefence</code> for the local operator UI. Semantic quarantine requires embeddings and Qdrant; without them, the demo prints a note and continues with deterministic local rules.</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Alpha scope</h2>
+        <div class="scope">
+          <div class="feature">
+            <h3>Included now</h3>
+            <ul class="list">
+              <li>HTTP reverse proxy for document writes.</li>
+              <li>Four-state admission decisions: allowed, warned, quarantined, blocked.</li>
+              <li>Local WAL, violations log, quarantine log, replay, CLI, MCP server, and operator UI.</li>
+            </ul>
+          </div>
+          <div class="feature">
+            <h3>Not in this alpha</h3>
+            <ul class="list">
+              <li>Hosted SaaS, multi-tenant auth, billing, or compliance claims.</li>
+              <li>A custom policy DSL or broad adapter matrix for every memory backend.</li>
+              <li>A memory database or retrieval engine.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
     <section>
       <div class="wrap">
         <h2>Operator views</h2>
+        <p class="section-lead">The local UI is built for repeated operator work: inspect decisions, review quarantine, replay the WAL, and confirm runtime configuration.</p>
         <div class="screens">
           <div>
             <div class="shot"><img src="assets/ui/writefence-ui-quarantine.png" alt="WriteFence quarantine review table"></div>
