@@ -105,7 +105,7 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo \
 
     <h2>Docker Compose</h2>
     <pre><code>docker compose up --build</code></pre>
-    <p>Open <code>http://127.0.0.1:9622/_writefence</code>. Stop the stack with <code>docker compose down</code>.</p>
+    <p>Open <code>http://127.0.0.1:9622/_writefence</code>. Stop the stack with <code>docker compose down</code>. To start fully fresh, use <code>docker compose down -v</code>.</p>
     <p>If host port <code>9622</code> is busy:</p>
     <pre><code>WRITEFENCE_PORT=19622 docker compose up --build</code></pre>
 
@@ -113,7 +113,9 @@ WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo \
     <ul>
       <li>Use Go 1.25 or newer for source builds.</li>
       <li>If ports <code>9621</code> or <code>9622</code> are busy, use the smoke script or pass different <code>--addr</code> and <code>--upstream</code> values.</li>
+      <li>The smoke script uses ports <code>19621</code> and <code>19622</code> by default. Override with <code>WRITEFENCE_SMOKE_STORE_PORT</code> and <code>WRITEFENCE_SMOKE_PROXY_PORT</code>.</li>
       <li>Set <code>WRITEFENCE_DATA_DIR=/path/to/dir</code> to keep logs and WAL files in a predictable directory.</li>
+      <li>In Docker Compose, only the WriteFence proxy is published to the host. The mock store stays internal so writes still pass through admission.</li>
       <li>Semantic quarantine requires embeddings plus Qdrant. Without those optional services, deterministic rules and replay still work.</li>
       <li>On Windows, use WSL or Docker for the alpha. Native Windows release archives are planned after the alpha.</li>
     </ul>

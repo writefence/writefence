@@ -11,6 +11,6 @@ writefence-mcp
 .writefence
 writefence.yaml
 writefence.local.yaml
-PRE_PUBLIC_*AUDIT_*.md
+PRE_PUBLIC_*.md
 docs/assets/ui
 AGENTS.md

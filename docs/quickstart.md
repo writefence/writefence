@@ -101,6 +101,12 @@ Stop it with:
 docker compose down
 ```
 
+This leaves the named demo volumes in place. To start fully fresh:
+
+```bash
+docker compose down -v
+```
+
 If host port `9622` is busy:
 
 ```bash
@@ -112,8 +118,12 @@ WRITEFENCE_PORT=19622 docker compose up --build
 - Use Go 1.25 or newer for source builds.
 - If ports `9621` or `9622` are busy, use the smoke script or pass different
   `--addr` and `--upstream` values.
+- The smoke script uses ports `19621` and `19622` by default. Override with
+  `WRITEFENCE_SMOKE_STORE_PORT` and `WRITEFENCE_SMOKE_PROXY_PORT`.
 - Set `WRITEFENCE_DATA_DIR=/path/to/dir` to keep logs and WAL files in a
   predictable directory.
+- In Docker Compose, only the WriteFence proxy is published to the host. The
+  mock store stays internal so writes still pass through admission.
 - Semantic quarantine requires embeddings plus Qdrant. Without those optional
   services, deterministic rules and replay still work.
 - On Windows, use WSL or Docker for the alpha. Native Windows release archives

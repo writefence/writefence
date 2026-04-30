@@ -11,7 +11,7 @@ session-state.json
 .writefence/
 
 # Private release/audit notes
-PRE_PUBLIC_*AUDIT_*.md
+PRE_PUBLIC_*.md
 
 # Build outputs
 bin/

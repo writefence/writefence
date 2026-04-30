@@ -125,6 +125,12 @@ Stop and remove the local stack with:
 docker compose down
 ```
 
+This leaves the named demo volumes in place. To start fully fresh:
+
+```bash
+docker compose down -v
+```
+
 If host port `9622` is busy:
 
 ```bash
@@ -173,8 +179,12 @@ Notes:
 - Use Go 1.25 or newer for source builds.
 - If ports `9621` or `9622` are busy, either use `./demo/smoke-quickstart.sh`
   or pass different `--addr` / `--upstream` values.
+- The smoke script uses ports `19621` and `19622` by default. Override with
+  `WRITEFENCE_SMOKE_STORE_PORT` and `WRITEFENCE_SMOKE_PROXY_PORT`.
 - Set `WRITEFENCE_DATA_DIR=/path/to/dir` to keep logs and WAL files in a
   predictable directory.
+- In Docker Compose, only the WriteFence proxy is published to the host. The
+  mock store stays internal so writes still pass through admission.
 - Semantic quarantine is optional. It requires embeddings plus Qdrant; without
   them, WriteFence still runs deterministic local rules and replay.
 - On Windows, use WSL or Docker for the alpha. Native Windows release archives
