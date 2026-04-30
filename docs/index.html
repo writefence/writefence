@@ -168,6 +168,7 @@
     .nav a:hover { color: var(--ink); text-decoration: none; }
     .nav-num { color: var(--ink-4); margin-right: 5px; font-size: 10px; }
     .top-actions { display: flex; align-items: center; gap: 8px; }
+    .menu-toggle { display: none; }
     .theme-toggle,
     .btn {
       min-height: 34px;
@@ -202,6 +203,21 @@
       border-radius: 999px;
       background: var(--accent);
       box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 18%, transparent);
+    }
+    .menu-toggle {
+      min-width: 36px;
+      min-height: 34px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background: color-mix(in oklch, var(--bg) 86%, var(--paper));
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 760;
+    }
+    .menu-toggle:hover {
+      border-color: var(--ink-3);
+      background: var(--bg-2);
     }
     .hero {
       padding: 46px 0 0;
@@ -354,24 +370,49 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      min-width: 42px;
       color: var(--ink-3);
-      font-size: 14px;
     }
-    .flow-arrow::after {
-      content: "";
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--accent);
-      animation: packet 3s ease-in-out infinite;
+    .flow-arrow svg {
+      width: 42px;
+      height: 34px;
+      overflow: visible;
     }
-    .flow-arrow.second::after { animation-delay: 1.3s; }
-    @keyframes packet {
-      0%, 100% { opacity: 0; transform: translateX(-15px) scale(.55); }
-      20% { opacity: 1; transform: translateX(-5px) scale(1); }
-      55% { opacity: .85; transform: translateX(12px) scale(1.18); }
-      76% { opacity: 0; transform: translateX(18px) scale(.75); }
+    .stream-line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.2;
+      stroke-linecap: round;
+      opacity: .75;
+    }
+    .flow-arrow.dirty { color: var(--blocked); }
+    .flow-arrow.clean { color: var(--allowed); }
+    .flow-arrow.dirty .particle {
+      fill: var(--blocked);
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--blocked) 48%, transparent));
+      animation: dirty-flow 2.8s cubic-bezier(.65, 0, .35, 1) infinite;
+    }
+    .flow-arrow.dirty .particle:nth-of-type(3) { fill: var(--warned); animation-delay: .32s; }
+    .flow-arrow.dirty .particle:nth-of-type(4) { animation-delay: .68s; }
+    .flow-arrow.clean .particle {
+      fill: var(--allowed);
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--allowed) 46%, transparent));
+      animation: clean-flow 2.8s cubic-bezier(.65, 0, .35, 1) infinite;
+    }
+    .flow-arrow.clean .particle:nth-of-type(3) { animation-delay: .28s; opacity: .72; }
+    @keyframes dirty-flow {
+      0% { opacity: 0; transform: translate(-14px, -5px) scale(.75); }
+      18% { opacity: 1; }
+      55% { transform: translate(9px, 4px) scale(1.08); opacity: .92; }
+      78% { transform: translate(18px, 0) scale(.58); opacity: 0; }
+      100% { opacity: 0; transform: translate(18px, 0) scale(.58); }
+    }
+    @keyframes clean-flow {
+      0% { opacity: 0; transform: translate(-12px, 0) scale(.72); }
+      18% { opacity: .92; }
+      58% { transform: translate(12px, 0) scale(1); opacity: .92; }
+      80% { transform: translate(20px, 0) scale(.7); opacity: 0; }
+      100% { opacity: 0; transform: translate(20px, 0) scale(.7); }
     }
     .flow-outcomes {
       display: grid;
@@ -822,6 +863,27 @@
       display: grid;
       gap: 12px;
     }
+    .replay-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .replay-stat {
+      padding: 10px 12px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background: var(--bg-2);
+      color: var(--ink-3);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .replay-stat b {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.2;
+    }
     .replay-row,
     .config-card {
       display: grid;
@@ -847,6 +909,20 @@
       position: relative;
       height: 1px;
       background: var(--rule);
+    }
+    .replay-arrow::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      top: -13px;
+      transform: translateX(-50%);
+      padding: 0 6px;
+      background: color-mix(in oklch, var(--bg-2) 92%, var(--paper));
+      color: var(--ink-4);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
     .replay-arrow::after {
       content: "";
@@ -886,10 +962,20 @@
       background: transparent;
       font-family: var(--mono);
       font-size: 11px;
+      transition: transform 150ms cubic-bezier(.22, 1, .36, 1), border-color 150ms cubic-bezier(.22, 1, .36, 1), background 150ms cubic-bezier(.22, 1, .36, 1), color 150ms cubic-bezier(.22, 1, .36, 1);
     }
     .q-btn.primary { color: var(--bg); background: var(--ink); border-color: var(--ink); }
-    .q-btn:hover { color: var(--ink); border-color: var(--ink); }
-    .q-btn.primary:hover { color: var(--bg); background: var(--ink); border-color: var(--ink); }
+    .q-btn:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+      background: color-mix(in oklch, var(--accent) 10%, var(--bg-2));
+      transform: translateY(-1px);
+    }
+    .q-btn.primary:hover {
+      color: var(--bg);
+      background: color-mix(in oklch, var(--ink) 86%, var(--accent));
+      border-color: var(--accent);
+    }
     .screenshot-showcase {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 270px;
@@ -1070,7 +1156,27 @@
     }
     @media (max-width: 1060px) {
       .nav { display: none; }
+      .topbar.open .nav {
+        position: absolute;
+        top: calc(100% + 1px);
+        left: var(--gutter);
+        right: var(--gutter);
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid var(--rule);
+        background: color-mix(in oklch, var(--bg) 96%, var(--paper));
+        box-shadow: 0 18px 48px -34px color-mix(in oklch, var(--ink) 45%, transparent);
+      }
+      .topbar.open .nav a {
+        padding: 10px 12px;
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        background: var(--bg-2);
+      }
       .hero-grid, .section-head, .install, .footer-grid { grid-template-columns: 1fr; }
+      .section-head.feature { grid-template-columns: 1fr; gap: 16px; }
       .hero-grid { gap: 36px; }
       .flow-grid { grid-template-columns: 1fr; gap: 10px; }
       .flow-arrow { min-height: 24px; transform: rotate(90deg); }
@@ -1085,15 +1191,18 @@
     @media (max-width: 660px) {
       :root { --gutter: 18px; }
       .topbar-inner { grid-template-columns: 1fr auto; }
+      .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
       .top-actions .btn { display: none; }
       .hero-meta { align-items: flex-start; flex-direction: column; }
       .hero { padding-top: 30px; }
-      h1 { font-size: 42px; }
+      h1 { max-width: 9.5ch; font-size: clamp(48px, 15vw, 58px); }
+      .section-title { max-width: 14ch; font-size: clamp(30px, 9vw, 38px); }
       .flow-card, .pipeline-shell, .install { padding: 18px; }
       .hero-bento, .rule-strip, .config-grid { grid-template-columns: 1fr; }
       .bento-main, .rule-strip { grid-column: auto; }
       .flow-outcomes { grid-template-columns: repeat(2, 1fr); }
-      .outcomes-grid, .pipeline-stages, .detail-grid { grid-template-columns: 1fr; }
+      .outcomes-grid, .pipeline-stages, .detail-grid, .replay-summary { grid-template-columns: 1fr; }
+      .replay-row { grid-template-columns: 1fr 34px 1fr; }
       .operator-main { padding: 18px; }
       .wf-table { min-width: 720px; }
       .operator-main { overflow-x: auto; }
@@ -1121,6 +1230,7 @@
           <span class="theme-dot" aria-hidden="true"></span>
           <span id="theme-label">System</span>
         </button>
+        <button class="menu-toggle" type="button" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">menu</button>
         <a class="btn" href="quickstart.html">docs</a>
         <a class="btn primary" href="https://github.com/writefence/writefence">github</a>
       </div>
@@ -1137,7 +1247,7 @@
         </div>
         <div class="hero-grid">
           <div>
-            <h1>Admission control <span class="muted">for</span> <span class="accent-word">agent memory.</span></h1>
+            <h1>Control <span class="muted">agent</span> <span class="accent-word">memory writes.</span></h1>
             <p class="hero-sub">WriteFence sits between agents, MCP clients, apps, and persistent memory stores. It evaluates every write before bad context becomes durable state.</p>
             <div class="hero-facts" aria-label="WriteFence alpha facts">
               <div><b>local HTTP proxy</b> / runs in front of a LightRAG-compatible store</div>
@@ -1161,7 +1271,14 @@
                   </div>
                   <div class="node-detail">POST /documents/text<br>payload: text, source, trace</div>
                 </div>
-                <div class="flow-arrow" aria-hidden="true">--&gt;</div>
+                <div class="flow-arrow dirty" aria-hidden="true">
+                  <svg viewBox="0 0 42 34" role="img">
+                    <path class="stream-line" d="M3 17 C14 10 23 24 39 17"></path>
+                    <circle class="particle" cx="11" cy="13" r="3"></circle>
+                    <rect class="particle" x="17" y="18" width="6" height="6" rx="1"></rect>
+                    <circle class="particle" cx="26" cy="14" r="2.5"></circle>
+                  </svg>
+                </div>
                 <div class="flow-node gate">
                   <div>
                     <div class="node-kicker">admission</div>
@@ -1169,7 +1286,13 @@
                   </div>
                   <div class="node-detail">built-in rules, optional semantic checks, WAL, ADC</div>
                 </div>
-                <div class="flow-arrow second" aria-hidden="true">--&gt;</div>
+                <div class="flow-arrow clean" aria-hidden="true">
+                  <svg viewBox="0 0 42 34" role="img">
+                    <path class="stream-line" d="M3 17 C15 17 27 17 39 17"></path>
+                    <circle class="particle" cx="13" cy="17" r="3"></circle>
+                    <circle class="particle" cx="25" cy="17" r="2.5"></circle>
+                  </svg>
+                </div>
                 <div class="flow-node">
                   <div>
                     <div class="node-kicker">upstream</div>
@@ -1359,10 +1482,11 @@
                   <div>
                     <h3 class="detail-title">result</h3>
                     <div class="replay-matrix" aria-label="Replay result matrix">
-                      <div class="replay-row"><span><span class="tag blocked">blocked</span></span><span class="replay-arrow"></span><span><span class="tag blocked">blocked</span></span></div>
-                      <div class="replay-row"><span><span class="tag warned">warned</span></span><span class="replay-arrow"></span><span><span class="tag warned">warned</span></span></div>
-                      <div class="replay-row"><span><span class="tag quarantined">quarantined</span></span><span class="replay-arrow"></span><span><span class="tag allowed">allowed</span></span></div>
-                      <div class="replay-row"><span><span class="tag allowed">allowed</span></span><span class="replay-arrow"></span><span><span class="tag blocked">blocked</span></span></div>
+                      <div class="replay-summary"><div class="replay-stat"><b>6</b>WAL entries</div><div class="replay-stat"><b>2</b>changed decisions</div><div class="replay-stat"><b>0</b>upstream writes</div></div>
+                      <div class="replay-row"><span><span class="tag blocked">blocked</span></span><span class="replay-arrow" data-label="same"></span><span><span class="tag blocked">blocked</span></span></div>
+                      <div class="replay-row"><span><span class="tag warned">warned</span></span><span class="replay-arrow" data-label="same"></span><span><span class="tag warned">warned</span></span></div>
+                      <div class="replay-row"><span><span class="tag quarantined">quarantined</span></span><span class="replay-arrow" data-label="now admits"></span><span><span class="tag allowed">allowed</span></span></div>
+                      <div class="replay-row"><span><span class="tag allowed">allowed</span></span><span class="replay-arrow" data-label="now blocks"></span><span><span class="tag blocked">blocked</span></span></div>
                     </div>
                   </div>
                 </div>
@@ -1493,6 +1617,13 @@
     themeToggle.addEventListener("click", () => {
       const current = localStorage.getItem("writefence-theme") || "system";
       applyTheme(current === "system" ? (systemTheme() === "dark" ? "light" : "dark") : "system");
+    });
+
+    const topbar = document.querySelector(".topbar");
+    const menuToggle = document.querySelector("#menu-toggle");
+    menuToggle.addEventListener("click", () => {
+      const open = topbar.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(open));
     });
 
     const sideButtons = document.querySelectorAll(".side-button[data-view]");
