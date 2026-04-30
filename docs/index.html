@@ -147,6 +147,7 @@
       gap: 24px;
     }
     .brand {
+      min-width: 126px;
       display: inline-flex;
       align-items: center;
       gap: 10px;
@@ -156,7 +157,8 @@
       font-weight: 760;
       letter-spacing: -0.01em;
     }
-    .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; }
+    .brand:hover { text-decoration: none; }
+    .brand img { width: 30px; height: 30px; border-radius: 7px; display: block; flex: 0 0 auto; }
     .nav {
       display: flex;
       justify-content: center;
@@ -165,6 +167,7 @@
       font-family: var(--mono);
       font-size: 12px;
     }
+    .nav .mobile-only { display: none; }
     .nav a:hover { color: var(--ink); text-decoration: none; }
     .nav-num { color: var(--ink-4); margin-right: 5px; font-size: 10px; }
     .top-actions { display: flex; align-items: center; gap: 8px; }
@@ -205,7 +208,7 @@
       box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 18%, transparent);
     }
     .menu-toggle {
-      min-width: 36px;
+      min-width: 54px;
       min-height: 34px;
       border: 1px solid var(--rule);
       border-radius: 3px;
@@ -374,45 +377,71 @@
       color: var(--ink-3);
     }
     .flow-arrow svg {
-      width: 42px;
-      height: 34px;
+      width: 54px;
+      height: 38px;
       overflow: visible;
     }
     .stream-line {
       fill: none;
       stroke: currentColor;
-      stroke-width: 1.2;
+      stroke-width: 1.6;
       stroke-linecap: round;
-      opacity: .75;
+      opacity: .9;
     }
     .flow-arrow.dirty { color: var(--blocked); }
     .flow-arrow.clean { color: var(--allowed); }
-    .flow-arrow.dirty .particle {
-      fill: var(--blocked);
-      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--blocked) 48%, transparent));
-      animation: dirty-flow 2.8s cubic-bezier(.65, 0, .35, 1) infinite;
+    .payload {
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
     }
-    .flow-arrow.dirty .particle:nth-of-type(3) { fill: var(--warned); animation-delay: .32s; }
-    .flow-arrow.dirty .particle:nth-of-type(4) { animation-delay: .68s; }
-    .flow-arrow.clean .particle {
+    .flow-arrow.dirty .payload {
+      fill: var(--blocked);
+      stroke: var(--warned);
+      stroke-width: .7;
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--blocked) 46%, transparent));
+      animation: dirty-flow 3.4s cubic-bezier(.22, 1, .36, 1) infinite;
+      animation-delay: 200ms;
+    }
+    .flow-arrow.dirty .payload:nth-of-type(3) { fill: var(--warned); animation-delay: 420ms; }
+    .flow-arrow.dirty .payload:nth-of-type(4) { animation-delay: 650ms; }
+    .flow-arrow.clean .payload {
       fill: var(--allowed);
       filter: drop-shadow(0 0 5px color-mix(in oklch, var(--allowed) 46%, transparent));
-      animation: clean-flow 2.8s cubic-bezier(.65, 0, .35, 1) infinite;
+      animation: clean-flow 3.4s cubic-bezier(.22, 1, .36, 1) infinite;
+      animation-delay: 560ms;
     }
-    .flow-arrow.clean .particle:nth-of-type(3) { animation-delay: .28s; opacity: .72; }
+    .flow-arrow.dirty .stream-line {
+      stroke: color-mix(in oklch, var(--blocked) 76%, var(--warned));
+      stroke-dasharray: 3 4;
+      animation: stream-dash 1.6s linear infinite;
+      animation-delay: 200ms;
+    }
+    .flow-arrow.clean .stream-line {
+      stroke: var(--allowed);
+      stroke-dasharray: 14 5;
+      animation: stream-dash 1.9s linear infinite;
+      animation-delay: 560ms;
+    }
+    @keyframes stream-dash {
+      to { stroke-dashoffset: -28; }
+    }
+    .flow-arrow.clean .payload:nth-of-type(3) { animation-delay: 780ms; }
     @keyframes dirty-flow {
-      0% { opacity: 0; transform: translate(-14px, -5px) scale(.75); }
-      18% { opacity: 1; }
-      55% { transform: translate(9px, 4px) scale(1.08); opacity: .92; }
-      78% { transform: translate(18px, 0) scale(.58); opacity: 0; }
-      100% { opacity: 0; transform: translate(18px, 0) scale(.58); }
+      0% { opacity: 0; transform: translate(-18px, -7px) rotate(-12deg) scale(.72); }
+      15% { opacity: 0; transform: translate(-14px, -6px) rotate(-10deg) scale(.78); }
+      28% { opacity: 1; }
+      58% { transform: translate(10px, 5px) rotate(7deg) scale(1); opacity: .88; }
+      82% { transform: translate(22px, 0) rotate(0deg) scale(.38); opacity: 0; }
+      100% { opacity: 0; transform: translate(22px, 0) rotate(0deg) scale(.38); }
     }
     @keyframes clean-flow {
-      0% { opacity: 0; transform: translate(-12px, 0) scale(.72); }
-      18% { opacity: .92; }
-      58% { transform: translate(12px, 0) scale(1); opacity: .92; }
-      80% { transform: translate(20px, 0) scale(.7); opacity: 0; }
-      100% { opacity: 0; transform: translate(20px, 0) scale(.7); }
+      0% { opacity: 0; transform: translate(-15px, 0) scale(.72); }
+      18% { opacity: 0; transform: translate(-11px, 0) scale(.78); }
+      32% { opacity: .92; }
+      62% { transform: translate(15px, 0) scale(1); opacity: .9; }
+      84% { transform: translate(24px, 0) scale(.72); opacity: 0; }
+      100% { opacity: 0; transform: translate(24px, 0) scale(.72); }
     }
     .flow-outcomes {
       display: grid;
@@ -699,6 +728,7 @@
       grid-template-columns: 195px minmax(0, 1fr);
       min-height: 520px;
     }
+    .operator-mobile-nav { display: none; }
     .operator-side {
       padding: 18px 0;
       border-right: 1px solid var(--rule);
@@ -1118,6 +1148,31 @@
       line-height: 1.72;
       white-space: pre;
     }
+    .terminal { position: relative; }
+    .copy-icon {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      color: var(--ink-2);
+      background: color-mix(in oklch, var(--bg-2) 82%, var(--paper));
+      font: inherit;
+      transition: transform 150ms cubic-bezier(.22, 1, .36, 1), border-color 150ms cubic-bezier(.22, 1, .36, 1), color 150ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .copy-icon:hover { transform: translateY(-1px); border-color: var(--accent); color: var(--ink); }
+    .copy-icon svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; }
+    .terminal-copy {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      border-color: oklch(31% 0.024 245);
+      color: oklch(76% 0.018 245);
+      background: oklch(16% 0.018 245);
+    }
     .prompt { color: oklch(58% 0.018 245); }
     .cmd { color: oklch(92% 0.012 245); }
     .out { color: oklch(70% 0.018 245); }
@@ -1168,8 +1223,10 @@
         border: 1px solid var(--rule);
         background: color-mix(in oklch, var(--bg) 96%, var(--paper));
         box-shadow: 0 18px 48px -34px color-mix(in oklch, var(--ink) 45%, transparent);
+        animation: menu-in 200ms cubic-bezier(.22, 1, .36, 1);
       }
       .topbar.open .nav a {
+        display: block;
         padding: 10px 12px;
         border: 1px solid var(--rule);
         border-radius: 3px;
@@ -1184,6 +1241,24 @@
       .pipeline-stages { grid-template-columns: repeat(2, 1fr); }
       .operator-body { grid-template-columns: 1fr; }
       .operator-side { display: none; }
+      .operator-mobile-nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 12px;
+        border-bottom: 1px solid var(--rule);
+        background: var(--bg-2);
+      }
+      .operator-mobile-nav .side-button {
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        background: var(--bg);
+      }
+      .operator-mobile-nav .side-button.active {
+        border-color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in oklch, var(--accent) 9%, var(--bg));
+      }
       .screenshot-showcase { grid-template-columns: 1fr; }
       .scope-grid { grid-template-columns: 1fr; }
       .scope-col + .scope-col { border-left: 0; border-top: 1px solid var(--rule); }
@@ -1197,6 +1272,7 @@
       .hero { padding-top: 30px; }
       h1 { max-width: 9.5ch; font-size: clamp(48px, 15vw, 58px); }
       .section-title { max-width: 14ch; font-size: clamp(30px, 9vw, 38px); }
+      .brand { min-width: 126px; }
       .flow-card, .pipeline-shell, .install { padding: 18px; }
       .hero-bento, .rule-strip, .config-grid { grid-template-columns: 1fr; }
       .bento-main, .rule-strip { grid-column: auto; }
@@ -1206,8 +1282,21 @@
       .operator-main { padding: 18px; }
       .wf-table { min-width: 720px; }
       .operator-main { overflow-x: auto; }
+      .operator-mobile-nav { grid-template-columns: 1fr; }
       .q-item { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; }
+    }
+    @keyframes menu-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
     }
   </style>
 </head>
@@ -1224,6 +1313,7 @@
         <a href="#pipeline"><span class="nav-num">03</span>pipeline</a>
         <a href="#operator"><span class="nav-num">04</span>operator</a>
         <a href="#scope"><span class="nav-num">05</span>scope</a>
+        <a class="mobile-only" href="quickstart.html"><span class="nav-num">06</span>docs</a>
       </nav>
       <div class="top-actions">
         <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch color theme">
@@ -1272,11 +1362,11 @@
                   <div class="node-detail">POST /documents/text<br>payload: text, source, trace</div>
                 </div>
                 <div class="flow-arrow dirty" aria-hidden="true">
-                  <svg viewBox="0 0 42 34" role="img">
-                    <path class="stream-line" d="M3 17 C14 10 23 24 39 17"></path>
-                    <circle class="particle" cx="11" cy="13" r="3"></circle>
-                    <rect class="particle" x="17" y="18" width="6" height="6" rx="1"></rect>
-                    <circle class="particle" cx="26" cy="14" r="2.5"></circle>
+                  <svg viewBox="0 0 54 38" role="img">
+                    <path class="stream-line" d="M4 19 C16 11 28 27 50 19"></path>
+                    <path class="payload" d="M9 13h8l3 4-3 4H9z"></path>
+                    <rect class="payload" x="18" y="20" width="9" height="7" rx="1.5"></rect>
+                    <path class="payload" d="M27 12h7l4 5-4 5h-7z"></path>
                   </svg>
                 </div>
                 <div class="flow-node gate">
@@ -1287,10 +1377,10 @@
                   <div class="node-detail">built-in rules, optional semantic checks, WAL, ADC</div>
                 </div>
                 <div class="flow-arrow clean" aria-hidden="true">
-                  <svg viewBox="0 0 42 34" role="img">
-                    <path class="stream-line" d="M3 17 C15 17 27 17 39 17"></path>
-                    <circle class="particle" cx="13" cy="17" r="3"></circle>
-                    <circle class="particle" cx="25" cy="17" r="2.5"></circle>
+                  <svg viewBox="0 0 54 38" role="img">
+                    <path class="stream-line" d="M4 19 C18 19 34 19 50 19"></path>
+                    <rect class="payload" x="13" y="15" width="11" height="8" rx="2"></rect>
+                    <rect class="payload" x="27" y="16" width="9" height="6" rx="2"></rect>
                   </svg>
                 </div>
                 <div class="flow-node">
@@ -1436,6 +1526,12 @@
               <button class="side-button" type="button" data-view="replay"><span>replay</span></button>
               <button class="side-button" type="button" data-view="config"><span>config</span></button>
             </aside>
+            <div class="operator-mobile-nav" aria-label="Operator views">
+              <button class="side-button active" type="button" data-view="violations"><span>violations</span><span class="count">5</span></button>
+              <button class="side-button" type="button" data-view="quarantine"><span>quarantine</span><span class="count">1</span></button>
+              <button class="side-button" type="button" data-view="replay"><span>replay</span></button>
+              <button class="side-button" type="button" data-view="config"><span>config</span></button>
+            </div>
             <div class="operator-main">
               <div class="operator-view" id="view-violations">
                 <div class="tabs"><button class="tab active" type="button">all</button><button class="tab" type="button">blocked</button><button class="tab" type="button">quarantined</button><button class="tab" type="button">warned</button></div>
@@ -1567,8 +1663,11 @@
             </div>
           </div>
           <div class="terminal" aria-label="WriteFence quickstart terminal">
+            <button class="copy-icon terminal-copy" type="button" data-copy-target="terminal-body" aria-label="Copy terminal command output">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
             <div class="terminal-bar"><div class="dots" aria-hidden="true"><span></span><span></span><span></span></div><span>~/writefence / bash</span></div>
-            <div class="terminal-body"><span class="prompt">$</span> <span class="cmd">./demo/smoke-quickstart.sh</span>
+            <div class="terminal-body" id="terminal-body"><span class="prompt">$</span> <span class="cmd">./demo/smoke-quickstart.sh</span>
 <span class="out">== Build ==</span>
 <span class="out">== Start services ==</span>
 <span class="out">Proxy     : http://127.0.0.1:19622</span>
@@ -1624,6 +1723,20 @@
     menuToggle.addEventListener("click", () => {
       const open = topbar.classList.toggle("open");
       menuToggle.setAttribute("aria-expanded", String(open));
+    });
+
+    const copyMarkup = {
+      copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path></svg>',
+      copied: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>'
+    };
+    document.querySelectorAll("[data-copy-target]").forEach((button) => {
+      button.innerHTML = copyMarkup.copy;
+      button.addEventListener("click", async () => {
+        const target = document.querySelector(`#${button.dataset.copyTarget}`);
+        await navigator.clipboard.writeText(target.innerText);
+        button.innerHTML = copyMarkup.copied;
+        window.setTimeout(() => { button.innerHTML = copyMarkup.copy; }, 1200);
+      });
     });
 
     const sideButtons = document.querySelectorAll(".side-button[data-view]");
