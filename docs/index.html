@@ -234,18 +234,18 @@
     }
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.95fr) minmax(520px, 1.05fr);
-      gap: 58px;
+      grid-template-columns: minmax(0, 0.82fr) minmax(580px, 1.18fr);
+      gap: 52px;
       align-items: start;
       padding-bottom: 60px;
     }
     h1 {
       margin: 0 0 22px;
-      max-width: 12ch;
+      max-width: 11.5ch;
       color: var(--ink);
-      font-size: clamp(48px, 7vw, 84px);
+      font-size: clamp(46px, 5.8vw, 72px);
       font-weight: 760;
-      line-height: 0.95;
+      line-height: 0.97;
       letter-spacing: 0;
     }
     h1 span { color: var(--ink-3); }
@@ -270,6 +270,12 @@
     }
     .hero-facts b { color: var(--ink); font-weight: 760; }
     .hero-cta { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-bento {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      font-family: var(--mono);
+    }
     .flow-card {
       position: relative;
       padding: 28px;
@@ -278,7 +284,13 @@
       background: color-mix(in oklch, var(--bg-2) 84%, var(--paper));
       box-shadow: 0 28px 70px -48px color-mix(in oklch, var(--ink) 38%, transparent);
       font-family: var(--mono);
+      transition: transform 180ms cubic-bezier(.22, 1, .36, 1), border-color 180ms cubic-bezier(.22, 1, .36, 1), background 180ms cubic-bezier(.22, 1, .36, 1);
     }
+    .flow-card:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in oklch, var(--accent) 55%, var(--rule));
+    }
+    .bento-main { grid-column: 1 / -1; }
     .figure-label {
       position: absolute;
       top: -1px;
@@ -304,6 +316,12 @@
       border: 1px solid var(--rule);
       background: var(--bg);
       padding: 15px;
+      transition: transform 160ms cubic-bezier(.22, 1, .36, 1), border-color 160ms cubic-bezier(.22, 1, .36, 1), background 160ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .flow-node:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in oklch, var(--accent) 45%, var(--rule));
+      background: color-mix(in oklch, var(--accent) 7%, var(--bg));
     }
     .flow-node.gate {
       border-color: var(--ink);
@@ -372,6 +390,65 @@
     .warned-color { background: var(--warned); }
     .quarantined-color { background: var(--quarantined); }
     .blocked-color { background: var(--blocked); }
+    .bento-card {
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 16px;
+      background: color-mix(in oklch, var(--bg-2) 82%, var(--paper));
+      box-shadow: 0 24px 60px -50px color-mix(in oklch, var(--ink) 40%, transparent);
+      transition: transform 160ms cubic-bezier(.22, 1, .36, 1), border-color 160ms cubic-bezier(.22, 1, .36, 1), background 160ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .bento-card:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in oklch, var(--accent) 55%, var(--rule));
+      background: color-mix(in oklch, var(--accent) 8%, var(--bg-2));
+    }
+    .bento-kicker {
+      color: var(--ink-4);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .bento-value {
+      color: var(--ink);
+      font-size: 26px;
+      font-weight: 760;
+      line-height: 1;
+    }
+    .bento-detail {
+      color: var(--ink-3);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bento-card.allowed { border-top: 2px solid var(--allowed); }
+    .bento-card.quarantined { border-top: 2px solid var(--quarantined); }
+    .bento-card.blocked { border-top: 2px solid var(--blocked); }
+    .rule-strip {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: color-mix(in oklch, var(--bg-2) 72%, transparent);
+    }
+    .rule-chip {
+      min-height: 74px;
+      padding: 12px;
+      border: 1px solid var(--rule-2);
+      background: var(--bg);
+      color: var(--ink-3);
+      font-size: 11px;
+      line-height: 1.45;
+      transition: transform 160ms cubic-bezier(.22, 1, .36, 1), border-color 160ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .rule-chip:hover { transform: translateY(-1px); border-color: var(--ink-3); }
+    .rule-chip b { display: block; margin-bottom: 4px; color: var(--ink); }
     section {
       padding: 88px 0;
       border-bottom: 1px solid var(--rule);
@@ -382,6 +459,19 @@
       gap: 48px;
       align-items: baseline;
       margin-bottom: 46px;
+    }
+    .section-head.centered {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      max-width: 780px;
+      margin-right: auto;
+      margin-left: auto;
+      text-align: center;
+    }
+    .section-head.centered .section-title,
+    .section-head.centered .section-lede {
+      margin-right: auto;
+      margin-left: auto;
     }
     .section-num {
       color: var(--ink-4);
@@ -584,8 +674,9 @@
       text-align: left;
       font-family: var(--mono);
       font-size: 12px;
+      transition: padding-left 160ms cubic-bezier(.22, 1, .36, 1), color 160ms cubic-bezier(.22, 1, .36, 1), background 160ms cubic-bezier(.22, 1, .36, 1);
     }
-    .side-button:hover { color: var(--ink); background: var(--bg-3); }
+    .side-button:hover { color: var(--ink); background: var(--bg-3); padding-left: 20px; }
     .side-button.active {
       color: var(--ink);
       border-left-color: var(--accent);
@@ -715,6 +806,52 @@
       line-height: 1.5;
       white-space: pre;
     }
+    .replay-matrix,
+    .config-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .replay-row,
+    .config-card {
+      display: grid;
+      grid-template-columns: 128px minmax(0, 1fr) 128px;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      background: color-mix(in oklch, var(--bg-2) 78%, var(--paper));
+      color: var(--ink-2);
+      font-family: var(--mono);
+      font-size: 12px;
+      transition: transform 160ms cubic-bezier(.22, 1, .36, 1), border-color 160ms cubic-bezier(.22, 1, .36, 1), background 160ms cubic-bezier(.22, 1, .36, 1);
+    }
+    .replay-row:hover,
+    .config-card:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in oklch, var(--accent) 55%, var(--rule));
+      background: color-mix(in oklch, var(--accent) 7%, var(--bg-2));
+    }
+    .replay-arrow {
+      position: relative;
+      height: 1px;
+      background: var(--rule);
+    }
+    .replay-arrow::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 8px;
+      height: 8px;
+      border-top: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+      transform: rotate(45deg);
+    }
+    .config-grid { grid-template-columns: repeat(2, 1fr); }
+    .config-card { grid-template-columns: 1fr; align-items: start; }
+    .config-card b { color: var(--ink); }
+    .config-card span { color: var(--ink-3); }
     .q-list { border: 1px solid var(--rule); border-radius: 3px; }
     .q-item {
       display: grid;
@@ -741,12 +878,21 @@
     }
     .q-btn.primary { color: var(--bg); background: var(--ink); border-color: var(--ink); }
     .q-btn:hover { color: var(--ink); border-color: var(--ink); }
+    .q-btn.primary:hover { color: var(--bg); background: var(--ink); border-color: var(--ink); }
     .screenshot-showcase {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 270px;
       gap: 18px;
       align-items: start;
       margin-top: 24px;
+    }
+    .proof-note {
+      margin: 34px 0 0;
+      color: var(--ink-4);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
     }
     .shot {
       overflow: hidden;
@@ -933,6 +1079,8 @@
       .hero { padding-top: 30px; }
       h1 { font-size: 42px; }
       .flow-card, .pipeline-shell, .install { padding: 18px; }
+      .hero-bento, .rule-strip, .config-grid { grid-template-columns: 1fr; }
+      .bento-main, .rule-strip { grid-column: auto; }
       .flow-outcomes { grid-template-columns: repeat(2, 1fr); }
       .outcomes-grid, .pipeline-stages, .detail-grid { grid-template-columns: 1fr; }
       .operator-main { padding: 18px; }
@@ -978,7 +1126,7 @@
         </div>
         <div class="hero-grid">
           <div>
-            <h1>Admission control <span>before</span> memory persistence.</h1>
+            <h1>Admission control for agent memory.</h1>
             <p class="hero-sub">WriteFence sits between agents, MCP clients, apps, and persistent memory stores. It evaluates every write before bad context becomes durable state.</p>
             <div class="hero-facts" aria-label="WriteFence alpha facts">
               <div><b>local HTTP proxy</b> / runs in front of a LightRAG-compatible store</div>
@@ -991,38 +1139,60 @@
               <a class="btn" href="compatibility.html">Check compatibility</a>
             </div>
           </div>
-          <div class="flow-card" aria-label="Agent to WriteFence to memory store flow">
-            <div class="figure-label">fig.01 / write admission path</div>
-            <div class="flow-grid">
-              <div class="flow-node">
-                <div>
-                  <div class="node-kicker">source</div>
-                  <div class="node-name">Agent / MCP client</div>
+          <div class="hero-bento" aria-label="Agent to WriteFence to memory store flow">
+            <div class="flow-card bento-main">
+              <div class="figure-label">fig.01 / write admission path</div>
+              <div class="flow-grid">
+                <div class="flow-node">
+                  <div>
+                    <div class="node-kicker">source</div>
+                    <div class="node-name">Agent / MCP client</div>
+                  </div>
+                  <div class="node-detail">POST /documents/text<br>payload: text, source, trace</div>
                 </div>
-                <div class="node-detail">POST /documents/text<br>payload: text, source, trace</div>
+                <div class="flow-arrow" aria-hidden="true">--&gt;</div>
+                <div class="flow-node gate">
+                  <div>
+                    <div class="node-kicker">admission</div>
+                    <div class="node-name">WriteFence :9622</div>
+                  </div>
+                  <div class="node-detail">built-in rules, optional semantic checks, WAL, ADC</div>
+                </div>
+                <div class="flow-arrow second" aria-hidden="true">--&gt;</div>
+                <div class="flow-node">
+                  <div>
+                    <div class="node-kicker">upstream</div>
+                    <div class="node-name">Memory store</div>
+                  </div>
+                  <div class="node-detail">receives only allowed or warned writes</div>
+                </div>
               </div>
-              <div class="flow-arrow" aria-hidden="true">--&gt;</div>
-              <div class="flow-node gate">
-                <div>
-                  <div class="node-kicker">admission</div>
-                  <div class="node-name">WriteFence :9622</div>
-                </div>
-                <div class="node-detail">built-in rules, optional semantic checks, WAL, ADC</div>
-              </div>
-              <div class="flow-arrow second" aria-hidden="true">--&gt;</div>
-              <div class="flow-node">
-                <div>
-                  <div class="node-kicker">upstream</div>
-                  <div class="node-name">Memory store</div>
-                </div>
-                <div class="node-detail">receives only allowed or warned writes</div>
+              <div class="flow-outcomes" aria-label="Admission outcomes">
+                <span class="outcome-chip"><span class="outcome-dot allowed-color"></span>allowed</span>
+                <span class="outcome-chip"><span class="outcome-dot warned-color"></span>warned</span>
+                <span class="outcome-chip"><span class="outcome-dot quarantined-color"></span>quarantined</span>
+                <span class="outcome-chip"><span class="outcome-dot blocked-color"></span>blocked</span>
               </div>
             </div>
-            <div class="flow-outcomes" aria-label="Admission outcomes">
-              <span class="outcome-chip"><span class="outcome-dot allowed-color"></span>allowed</span>
-              <span class="outcome-chip"><span class="outcome-dot warned-color"></span>warned</span>
-              <span class="outcome-chip"><span class="outcome-dot quarantined-color"></span>quarantined</span>
-              <span class="outcome-chip"><span class="outcome-dot blocked-color"></span>blocked</span>
+            <div class="bento-card allowed">
+              <div class="bento-kicker">forwarded</div>
+              <div class="bento-value">4</div>
+              <div class="bento-detail">allowed writes reached the upstream store</div>
+            </div>
+            <div class="bento-card quarantined">
+              <div class="bento-kicker">held local</div>
+              <div class="bento-value">2</div>
+              <div class="bento-detail">review-required writes stayed out of memory</div>
+            </div>
+            <div class="bento-card blocked">
+              <div class="bento-kicker">rejected</div>
+              <div class="bento-value">2</div>
+              <div class="bento-detail">policy-breaking writes returned structured ADC</div>
+            </div>
+            <div class="rule-strip">
+              <div class="rule-chip"><b>prefix_required</b>[STATUS], [DECISION], [RUNBOOK]</div>
+              <div class="rule-chip"><b>context_shield</b>sensitive context is rejected before persistence</div>
+              <div class="rule-chip"><b>semantic_dedup</b>optional review with embeddings plus Qdrant</div>
             </div>
           </div>
         </div>
@@ -1031,7 +1201,7 @@
 
     <section id="outcomes">
       <div class="container">
-        <div class="section-head">
+        <div class="section-head centered">
           <div class="section-num">/02 / outcomes</div>
           <div>
             <h2 class="section-title">Four decisions. One contract.</h2>
@@ -1105,7 +1275,7 @@
 
     <section id="operator">
       <div class="container">
-        <div class="section-head">
+        <div class="section-head centered">
           <div class="section-num">/04 / operator</div>
           <div>
             <h2 class="section-title">Inspect what agents tried to write.</h2>
@@ -1172,29 +1342,29 @@
                   </div>
                   <div>
                     <h3 class="detail-title">result</h3>
-                    <pre class="mini-code">blocked -> blocked
-allowed -> allowed
-quarantined -> allowed
-allowed -> blocked</pre>
+                    <div class="replay-matrix" aria-label="Replay result matrix">
+                      <div class="replay-row"><span><span class="tag blocked">blocked</span></span><span class="replay-arrow"></span><span><span class="tag blocked">blocked</span></span></div>
+                      <div class="replay-row"><span><span class="tag warned">warned</span></span><span class="replay-arrow"></span><span><span class="tag warned">warned</span></span></div>
+                      <div class="replay-row"><span><span class="tag quarantined">quarantined</span></span><span class="replay-arrow"></span><span><span class="tag allowed">allowed</span></span></div>
+                      <div class="replay-row"><span><span class="tag allowed">allowed</span></span><span class="replay-arrow"></span><span><span class="tag blocked">blocked</span></span></div>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="operator-view" id="view-config" hidden>
                 <div class="tabs"><button class="tab active" type="button">runtime</button></div>
-                <pre class="mini-code">proxy:
-  addr: "127.0.0.1:9622"
-  upstream: "http://127.0.0.1:9621"
-
-rules:
-  english:
-    threshold: 0.05
-  semantic_dedup:
-    threshold: 0.98</pre>
+                <div class="config-grid" aria-label="Runtime configuration cards">
+                  <div class="config-card"><b>proxy</b><span>127.0.0.1:9622 -> 127.0.0.1:9621</span></div>
+                  <div class="config-card"><b>WAL</b><span>/tmp/writefence-alpha/writefence-wal.jsonl</span></div>
+                  <div class="config-card"><b>prefix_required</b><span>[STATUS], [DECISION], [SETUP], [CONFIG], [RUNBOOK]</span></div>
+                  <div class="config-card"><b>semantic_dedup</b><span>threshold 0.98, optional dependencies</span></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
+        <div class="proof-note">Actual local UI captures from deterministic alpha data</div>
         <div class="screenshot-showcase" aria-label="Actual local UI screenshots">
           <div class="shot">
             <img id="showcase-image" src="assets/ui/writefence-ui-overview.png" alt="WriteFence overview showing current admission decisions and rule status">

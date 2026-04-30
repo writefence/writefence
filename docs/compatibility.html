@@ -103,6 +103,19 @@
       --blue: oklch(70% 0.16 220);
       --note: oklch(94.8% 0.015 82);
     }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --paper: oklch(16% 0.018 245);
+        --ink: oklch(92% 0.012 245);
+        --muted: oklch(78% 0.016 245);
+        --line: oklch(31% 0.024 245);
+        --line-strong: oklch(42% 0.028 245);
+        --console: oklch(12% 0.018 245);
+        --blue: oklch(76% 0.14 220);
+        --note: oklch(20% 0.02 245);
+      }
+    }
     [data-theme="dark"] {
       --paper: oklch(16% 0.018 245);
       --ink: oklch(92% 0.012 245);
