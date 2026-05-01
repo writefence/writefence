@@ -555,6 +555,42 @@
     }
     .rule-chip:hover { transform: translateY(-1px); border-color: var(--ink-3); }
     .rule-chip b { display: block; margin-bottom: 4px; color: var(--ink); }
+    .signal-strip {
+      grid-column: 1 / -1;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background:
+        linear-gradient(90deg, color-mix(in oklch, var(--accent) 7%, transparent), transparent 24%, transparent 76%, color-mix(in oklch, var(--accent) 7%, transparent)),
+        color-mix(in oklch, var(--bg-2) 86%, var(--paper));
+      color: var(--ink-4);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .signal-track {
+      display: flex;
+      width: max-content;
+      animation: signal-marquee 34s linear infinite;
+    }
+    .signal-track span {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 16px;
+      white-space: nowrap;
+    }
+    .signal-track span::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 18%, transparent);
+    }
+    @keyframes signal-marquee {
+      to { transform: translateX(-50%); }
+    }
     section {
       padding: 88px 0;
       border-bottom: 1px solid var(--rule);
@@ -1517,6 +1553,18 @@
               <div class="rule-chip"><b>prefix_required</b>[STATUS], [DECISION], [RUNBOOK]</div>
               <div class="rule-chip"><b>context_shield</b>sensitive context is rejected before persistence</div>
               <div class="rule-chip"><b>semantic_dedup</b>optional review with embeddings plus Qdrant</div>
+            </div>
+            <div class="signal-strip" aria-hidden="true">
+              <div class="signal-track">
+                <span>trace captured before memory</span>
+                <span>policy diff stays replayable</span>
+                <span>review queue before persistence</span>
+                <span>bad context never becomes archaeology</span>
+                <span>trace captured before memory</span>
+                <span>policy diff stays replayable</span>
+                <span>review queue before persistence</span>
+                <span>bad context never becomes archaeology</span>
+              </div>
             </div>
           </div>
         </div>
