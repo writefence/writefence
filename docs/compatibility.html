@@ -207,11 +207,7 @@ DELETE /documents/delete_document</code></pre>
     <p>Other paths are proxied through without admission decisions.</p>
 
     <h2>Optional semantic dedup</h2>
-    <pre><code>./bin/writefence \
-  --addr 127.0.0.1:9622 \
-  --upstream http://127.0.0.1:9621 \
-  --embed-url http://127.0.0.1:11434 \
-  --qdrant-url http://127.0.0.1:6333</code></pre>
+    <pre><code>./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621 --embed-url http://127.0.0.1:11434 --qdrant-url http://127.0.0.1:6333</code></pre>
     <p>If either dependency is absent, semantic dedup is disabled and WriteFence keeps running with deterministic local rules.</p>
 
     <h2>Not in alpha scope</h2>

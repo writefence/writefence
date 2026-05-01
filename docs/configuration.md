@@ -42,10 +42,7 @@ Run with:
 CLI flags override YAML values when they are provided explicitly:
 
 ```bash
-./bin/writefence \
-  --config ./writefence.yaml \
-  --addr 127.0.0.1:9622 \
-  --upstream http://127.0.0.1:9621
+./bin/writefence --config ./writefence.yaml --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
 ```
 
 Use `--metrics=false` to disable `/metrics` regardless of the YAML value.

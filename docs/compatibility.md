@@ -51,11 +51,7 @@ Semantic dedup is enabled only when both embedding and Qdrant URLs are
 configured:
 
 ```bash
-./bin/writefence \
-  --addr 127.0.0.1:9622 \
-  --upstream http://127.0.0.1:9621 \
-  --embed-url http://127.0.0.1:11434 \
-  --qdrant-url http://127.0.0.1:6333
+./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621 --embed-url http://127.0.0.1:11434 --qdrant-url http://127.0.0.1:6333
 ```
 
 If either dependency is absent, semantic dedup is disabled and WriteFence keeps
