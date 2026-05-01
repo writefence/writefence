@@ -22,7 +22,7 @@
       --ink: oklch(19% 0.015 82);
       --ink-2: oklch(34% 0.018 82);
       --ink-3: oklch(48% 0.018 82);
-      --ink-4: oklch(63% 0.014 82);
+      --ink-4: oklch(55% 0.014 82);
       --rule: oklch(82% 0.018 82);
       --rule-2: oklch(88% 0.014 82);
       --accent: oklch(70% 0.16 220);
@@ -74,7 +74,7 @@
       --ink: oklch(19% 0.015 82);
       --ink-2: oklch(34% 0.018 82);
       --ink-3: oklch(48% 0.018 82);
-      --ink-4: oklch(63% 0.014 82);
+      --ink-4: oklch(55% 0.014 82);
       --rule: oklch(82% 0.018 82);
       --rule-2: oklch(88% 0.014 82);
       --accent: oklch(70% 0.16 220);
@@ -777,6 +777,17 @@
       border-radius: 3px;
       background: var(--bg);
       text-align: center;
+    }
+    .demo-chip {
+      padding: 3px 7px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink-3);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
     }
     .operator-body {
       display: grid;
@@ -1573,6 +1584,7 @@
           <div class="window-chrome">
             <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
             <div class="window-url">http://127.0.0.1:9622/_writefence</div>
+            <div class="demo-chip">demo data</div>
             <div>local / WAL ready</div>
           </div>
           <div class="operator-body">
