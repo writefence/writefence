@@ -46,12 +46,17 @@ You represent that:
 
 ## Project License
 
-The Project is currently licensed under the Apache License, Version 2.0.
+The Project is currently licensed under the GNU Affero General Public License
+v3.0 or later (AGPL-3.0-or-later).
 
 Your Contribution may be distributed under the Project license, future versions
-of that license, or another license chosen by the project maintainers for the
-Project, provided the license remains consistent with the rights granted in this
-Agreement.
+of that license, or another open source or commercial license chosen by the
+project maintainers for the Project, provided the license remains consistent
+with the rights granted in this Agreement.
+
+The project maintainers may offer commercial licenses for the Project. By
+submitting a Contribution, You grant the rights needed for the maintainers to
+include Your Contribution in those commercial license offerings.
 
 ## No Obligation
 

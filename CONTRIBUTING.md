@@ -22,8 +22,10 @@ go vet ./...
 External pull requests require a signed Contributor License Agreement before
 merge.
 
-The CLA text is in [CLA.md](CLA.md). The hosted CLA Assistant gate must be live
-before the repository accepts outside contributions.
+The CLA text is in [CLA.md](CLA.md). WriteFence uses AGPL-3.0-or-later plus
+commercial licensing, so the CLA must preserve the maintainers' ability to offer
+commercial terms. The hosted CLA Assistant gate must be live before the
+repository accepts outside contributions.
 
 Maintainers should reject or defer external pull requests until the CLA status
 check passes.

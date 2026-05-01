@@ -268,4 +268,8 @@ Please report suspected vulnerabilities privately. See
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+WriteFence is licensed under AGPL-3.0-or-later. See [LICENSE](LICENSE).
+
+Commercial licenses are available for proprietary embedding, closed-source
+redistribution, hosted managed offerings, OEM use, or enterprise terms. See
+[COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
