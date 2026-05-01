@@ -285,14 +285,11 @@ go build -o bin/writefence-cli ./cmd/writefence-cli</code></pre>
     <p>The mock store accepts <code>POST /documents/text</code> and keeps accepted writes in a local JSONL file under <code>/tmp/writefence-mock-store</code> by default.</p>
 
     <h2>4. Start WriteFence</h2>
-    <pre><code>WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
-  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
+    <pre><code>env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
     <p>Open the local operator UI at <code>http://127.0.0.1:9622/_writefence</code>.</p>
 
     <h2>5. Run the demo flow</h2>
-    <pre><code>WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
-  WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl \
-  ./demo/canonical-demo.sh</code></pre>
+    <pre><code>env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl ./demo/canonical-demo.sh</code></pre>
     <ul>
       <li>A blocked write with a suggested fix.</li>
       <li>A corrected write that is admitted.</li>
@@ -302,8 +299,7 @@ go build -o bin/writefence-cli ./cmd/writefence-cli</code></pre>
 
     <h2>6. Load deterministic UI data</h2>
     <pre><code>WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo
-WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo \
-  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
+env WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621</code></pre>
 
     <h2>Docker Compose</h2>
     <pre><code>docker compose up --build</code></pre>

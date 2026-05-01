@@ -36,8 +36,7 @@ local JSONL file under `/tmp/writefence-mock-store` by default.
 In another shell:
 
 ```bash
-WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
-  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
 ```
 
 Open the local operator UI:
@@ -51,9 +50,7 @@ http://127.0.0.1:9622/_writefence
 In a third shell:
 
 ```bash
-WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
-  WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl \
-  ./demo/canonical-demo.sh
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl ./demo/canonical-demo.sh
 ```
 
 The demo shows:
@@ -71,8 +68,7 @@ For a screenshot-friendly local UI preview:
 
 ```bash
 WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo
-WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo \
-  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
+env WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
 ```
 
 Then open:

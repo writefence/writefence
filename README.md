@@ -83,8 +83,7 @@ go run ./demo/mock-memory-store.go -addr 127.0.0.1:9621
 In another shell:
 
 ```bash
-WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
-  ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
 ```
 
 Open the local operator UI:
@@ -96,9 +95,7 @@ http://127.0.0.1:9622/_writefence
 Run the demo flow:
 
 ```bash
-WRITEFENCE_DATA_DIR=/tmp/writefence-alpha \
-  WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl \
-  ./demo/canonical-demo.sh
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl ./demo/canonical-demo.sh
 ```
 
 See [docs/quickstart.md](docs/quickstart.md) for the full local alpha path,
@@ -196,7 +193,7 @@ Deterministic screenshot fixtures can be generated with:
 
 ```bash
 WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo
-WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo ./bin/writefence --addr :9622 --upstream http://127.0.0.1:9621
+env WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo ./bin/writefence --addr :9622 --upstream http://127.0.0.1:9621
 ./demo/capture-ui-screenshots.py --url http://127.0.0.1:9622/_writefence --out docs/assets/ui
 ```
 
