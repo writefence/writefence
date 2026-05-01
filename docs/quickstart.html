@@ -274,7 +274,7 @@
 
     <h2>1. Run the smoke script</h2>
     <pre><code>./demo/smoke-quickstart.sh</code></pre>
-    <p>The smoke script builds the binaries, starts the mock store and proxy on temporary ports, checks the local UI, verifies blocked and allowed writes, runs replay, and stops background processes.</p>
+    <p>The smoke script builds the binaries, starts the mock store and proxy on temporary ports, checks the local UI, verifies blocked, warned, and allowed writes, runs replay, and stops background processes.</p>
 
     <h2>2. Build the binaries manually</h2>
     <pre><code>go build -o bin/writefence ./cmd/writefence
@@ -291,11 +291,22 @@ go build -o bin/writefence-cli ./cmd/writefence-cli</code></pre>
     <h2>5. Run the demo flow</h2>
     <pre><code>env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl ./demo/canonical-demo.sh</code></pre>
     <ul>
-      <li>A blocked write with a suggested fix.</li>
-      <li>A corrected write that is admitted.</li>
+      <li>A malformed write blocked with <code>422</code> before it reaches the memory store.</li>
+      <li>A corrected <code>[RUNBOOK]</code> write that is admitted.</li>
+      <li>A mixed-language <code>[RUNBOOK]</code> write forwarded with <code>X-WriteFence-*</code> warning headers.</li>
+      <li>Optional quarantine/review when semantic dependencies are configured.</li>
       <li>Replay over the local WAL.</li>
     </ul>
     <div class="note">Semantic quarantine requires embeddings plus Qdrant. Without those optional services, the demo prints a note and continues with deterministic local rules.</div>
+
+    <h2>Alternate ports</h2>
+    <p>If you already run an AIM stack or another WriteFence memory gateway on <code>9621/9622</code>, use alternate loopback ports:</p>
+    <pre><code>go run ./demo/mock-memory-store.go -addr 127.0.0.1:9721
+
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha-alt ./bin/writefence --addr 127.0.0.1:9722 --upstream http://127.0.0.1:9721
+
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha-alt WRITEFENCE_URL=http://127.0.0.1:9722 WRITEFENCE_WAL=/tmp/writefence-alpha-alt/writefence-wal.jsonl ./demo/canonical-demo.sh</code></pre>
+    <div class="note"><code>[STATUS]</code> writes are intentionally special: <code>status_dedup</code> can remove older <code>[STATUS]</code> documents upstream, so the canonical demo uses <code>[RUNBOOK]</code> for persistence checks.</div>
 
     <h2>6. Load deterministic UI data</h2>
     <pre><code>WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo

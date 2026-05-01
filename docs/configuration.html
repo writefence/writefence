@@ -230,6 +230,8 @@ rules:
     <p><code>allowed</code> is the list of required document prefixes. This gives memory entries a predictable category before they become durable state.</p>
     <h3><code>semantic_dedup</code></h3>
     <p>Semantic deduplication is enabled only when both <code>embed_url</code> and <code>qdrant_url</code> are configured. If either dependency is absent, WriteFence keeps running with deterministic local rules.</p>
+    <h3><code>status_dedup</code></h3>
+    <p><code>[STATUS]</code> writes have replacement semantics. When WriteFence admits a new <code>[STATUS]</code> document, the built-in <code>status_dedup</code> rule asynchronously deletes older upstream documents whose summaries contain <code>[STATUS]</code>. Use <code>[RUNBOOK]</code>, <code>[CONFIG]</code>, or <code>[DECISION]</code> for long-lived memory that should remain visible as separate entries.</p>
 
     <h2>Alpha boundary</h2>
     <p>The alpha validates the local write-admission loop: block, warn, quarantine, replay, and inspect decisions. Hosted policy management, multi-tenant auth, billing, a custom policy DSL, and broad adapter coverage are later product decisions.</p>
