@@ -83,6 +83,14 @@ amounts are blocked with a retryable admission decision.
 `POST /documents/text` must start with one of these values. This gives memory
 entries a predictable category before they become durable state.
 
+### `status_dedup`
+
+`[STATUS]` writes have replacement semantics. When WriteFence admits a new
+`[STATUS]` document, the built-in `status_dedup` rule asynchronously deletes
+older upstream documents whose summaries contain `[STATUS]`. Use `[RUNBOOK]`,
+`[CONFIG]`, or another non-status prefix for examples where you want accepted
+writes to remain side by side in the mock store.
+
 ### `semantic_dedup`
 
 Semantic deduplication is enabled only when both `embed_url` and `qdrant_url`

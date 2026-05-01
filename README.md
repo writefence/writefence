@@ -98,6 +98,15 @@ Run the demo flow:
 env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha WRITEFENCE_WAL=/tmp/writefence-alpha/writefence-wal.jsonl ./demo/canonical-demo.sh
 ```
 
+If `127.0.0.1:9621` or `127.0.0.1:9622` is already in use, keep the services
+on loopback and choose another pair of ports:
+
+```bash
+go run ./demo/mock-memory-store.go -addr 127.0.0.1:9721
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha-alt ./bin/writefence --addr 127.0.0.1:9722 --upstream http://127.0.0.1:9721
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha-alt WRITEFENCE_URL=http://127.0.0.1:9722 WRITEFENCE_WAL=/tmp/writefence-alpha-alt/writefence-wal.jsonl ./demo/canonical-demo.sh
+```
+
 See [docs/quickstart.md](docs/quickstart.md) for the full local alpha path,
 [docs/configuration.md](docs/configuration.md) for policy configuration, and
 [docs/compatibility.md](docs/compatibility.md) for upstream compatibility.
@@ -162,14 +171,20 @@ The repo includes a single demo script:
 ```
 
 It shows:
-1. block -> suggested fix -> corrected write admitted
-2. optional semantic quarantine -> human approve/reject when semantic dedup dependencies are configured
-3. replay -> policy diff over WAL
+1. malformed write blocked with `422` before persistence
+2. corrected `[RUNBOOK]` write admitted
+3. mixed-language `[RUNBOOK]` write forwarded with `X-WriteFence-*` warning headers
+4. optional semantic quarantine -> human approve/reject when semantic dedup dependencies are configured
+5. replay -> policy diff over WAL
 
 Notes:
 - quarantine requires semantic dedup to be enabled on the running proxy
 - without embeddings and Qdrant, the demo prints a note and continues with deterministic local rules
-- the script assumes WriteFence is already running on `http://127.0.0.1:9622`
+- the script assumes WriteFence is already running on `http://127.0.0.1:9622`,
+  or on `WRITEFENCE_URL` when using alternate ports
+- `[STATUS]` writes are intentionally special: `status_dedup` can remove older
+  `[STATUS]` documents upstream, so the canonical demo uses `[RUNBOOK]` for
+  persistence examples
 
 ## Troubleshooting
 

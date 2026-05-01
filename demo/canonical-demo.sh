@@ -27,6 +27,7 @@ extract_json_field() {
 }
 
 require_cmd curl
+require_cmd grep
 require_cmd sed
 
 if [[ ! -x "$WriteFenceCLI" ]]; then
@@ -40,7 +41,7 @@ printf 'CLI path : %s\n' "$WriteFenceCLI"
 printf 'WAL path : %s\n' "$WALPath"
 printf 'Review   : %s\n' "$ReviewAction"
 
-print_section "Path 1: Block -> Suggested Fix -> Allow"
+print_section "Path 1: Block Before Persistence -> Suggested Fix -> Allow"
 bad_code="$(curl -sS -o "$tmpdir/block.json" -w '%{http_code}' \
   -X POST "$WriteFenceURL/documents/text" \
   -H 'Content-Type: application/json' \
@@ -48,26 +49,38 @@ bad_code="$(curl -sS -o "$tmpdir/block.json" -w '%{http_code}' \
 printf 'Bad write HTTP: %s\n' "$bad_code"
 cat "$tmpdir/block.json"
 printf '\n'
+printf 'Expected: HTTP 422 means WriteFence rejected this before forwarding it to the memory store.\n'
 
 good_code="$(curl -sS -o "$tmpdir/allow.json" -w '%{http_code}' \
   -X POST "$WriteFenceURL/documents/text" \
   -H 'Content-Type: application/json' \
-  --data '{"text":"[STATUS] corrected write after ADC guidance","description":"canonical demo corrected write"}')"
+  --data '{"text":"[RUNBOOK] corrected write after ADC guidance","description":"canonical demo corrected write"}')"
 printf 'Corrected write HTTP: %s\n' "$good_code"
 cat "$tmpdir/allow.json"
 printf '\n'
 
-print_section "Path 2: Quarantine -> Human Review"
+print_section "Path 2: Warn -> Forward With Headers"
+warn_code="$(curl -sS -D "$tmpdir/warn.headers" -o "$tmpdir/warn.json" -w '%{http_code}' \
+  -X POST "$WriteFenceURL/documents/text" \
+  -H 'Content-Type: application/json' \
+  --data '{"text":"[RUNBOOK] mixed language note with яяя characters but otherwise English demo context","description":"canonical demo warning"}')"
+printf 'Warned write HTTP: %s\n' "$warn_code"
+grep -i '^X-WriteFence-' "$tmpdir/warn.headers" || true
+cat "$tmpdir/warn.json"
+printf '\n'
+printf 'Expected: HTTP 200 with X-WriteFence-Decision: warned means the write was forwarded with an admission warning.\n'
+
+print_section "Path 3: Quarantine -> Human Review"
 first_quarantine_code="$(curl -sS -o "$tmpdir/quarantine-seed.json" -w '%{http_code}' \
   -X POST "$WriteFenceURL/documents/text" \
   -H 'Content-Type: application/json' \
-  --data '{"text":"[STATUS] canonical replay seed for quarantine path","description":"canonical demo seed"}')"
+  --data '{"text":"[RUNBOOK] canonical replay seed for quarantine path","description":"canonical demo seed"}')"
 printf 'Seed write HTTP: %s\n' "$first_quarantine_code"
 
 second_quarantine_code="$(curl -sS -o "$tmpdir/quarantine.json" -w '%{http_code}' \
   -X POST "$WriteFenceURL/documents/text" \
   -H 'Content-Type: application/json' \
-  --data '{"text":"[STATUS] canonical replay seed for quarantine path with slight wording drift","description":"canonical demo duplicate candidate"}')"
+  --data '{"text":"[RUNBOOK] canonical replay seed for quarantine path with slight wording drift","description":"canonical demo duplicate candidate"}')"
 printf 'Near-duplicate write HTTP: %s\n' "$second_quarantine_code"
 cat "$tmpdir/quarantine.json"
 printf '\n'
@@ -94,5 +107,5 @@ else
   fi
 fi
 
-print_section "Path 3: Replay"
+print_section "Path 4: Replay"
 "$WriteFenceCLI" replay --wal "$WALPath"

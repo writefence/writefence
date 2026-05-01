@@ -55,14 +55,38 @@ env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha WRITEFENCE_WAL=/tmp/writefence-alp
 
 The demo shows:
 
-- a blocked write with a suggested fix;
-- a corrected write that is admitted;
+- a malformed write blocked with `422` before it reaches the memory store;
+- a corrected `[RUNBOOK]` write that is admitted;
+- a mixed-language `[RUNBOOK]` write forwarded with `X-WriteFence-*` warning
+  headers;
 - replay over the local WAL.
 
 The semantic quarantine path requires embeddings plus Qdrant. Without those
 optional services, the demo prints a note and continues.
 
-## 5. Load deterministic UI data
+## 5. Use alternate local ports
+
+If you already run an AIM stack or another WriteFence memory gateway on
+`127.0.0.1:9622`, use a different loopback pair. Keep the UI on loopback
+because `/_writefence` exposes local operator controls and memory previews.
+
+```bash
+go run ./demo/mock-memory-store.go -addr 127.0.0.1:9721
+```
+
+In another shell:
+
+```bash
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha-alt ./bin/writefence --addr 127.0.0.1:9722 --upstream http://127.0.0.1:9721
+```
+
+Run the demo against that proxy:
+
+```bash
+env WRITEFENCE_DATA_DIR=/tmp/writefence-alpha-alt WRITEFENCE_URL=http://127.0.0.1:9722 WRITEFENCE_WAL=/tmp/writefence-alpha-alt/writefence-wal.jsonl ./demo/canonical-demo.sh
+```
+
+## 6. Load deterministic UI data
 
 For a screenshot-friendly local UI preview:
 
