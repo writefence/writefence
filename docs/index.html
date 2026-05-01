@@ -269,7 +269,7 @@
     }
     h1 .muted { color: var(--ink-3); }
     h1 .accent-word {
-      color: var(--ink);
+      color: var(--accent-ink);
       text-shadow: 0 0 22px color-mix(in oklch, var(--accent) 16%, transparent);
     }
     .hero-sub {
@@ -1425,11 +1425,11 @@
         </div>
         <div class="hero-grid">
           <div>
-            <h1>Control <span class="muted">agent</span> <span class="accent-word">memory writes.</span></h1>
-            <p class="hero-sub">WriteFence sits between agents, MCP clients, apps, and persistent memory stores. It evaluates every write before bad context becomes durable state.</p>
+            <h1>Gate <span class="muted">agent memory</span> <span class="accent-word">before it persists.</span></h1>
+            <p class="hero-sub">Every write gets an admission decision: allowed, warned, quarantined, or blocked, with traceable reasons and replay before bad context becomes durable state.</p>
             <div class="hero-facts" aria-label="WriteFence alpha facts">
-              <div><b>local HTTP proxy</b> / runs in front of a LightRAG-compatible store</div>
-              <div><b>machine-readable ADC</b> / every decision has rule, reason, retry, review, trace</div>
+              <div><b>four-state ADC</b> / allow, warn, quarantine, or block before persistence</div>
+              <div><b>replayable evidence</b> / every decision has rule, reason, retry, review, trace</div>
               <div><b>operator surface</b> / WAL replay, quarantine review, local UI, CLI</div>
             </div>
             <div class="hero-cta">
