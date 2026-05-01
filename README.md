@@ -139,7 +139,7 @@ WRITEFENCE_PORT=19622 docker compose up --build
 ```bash
 go build -o bin/writefence ./cmd/writefence
 go build -o bin/writefence-cli ./cmd/writefence-cli
-./bin/writefence --addr :9622 --upstream http://127.0.0.1:9621
+./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
 ```
 
 In another shell:
