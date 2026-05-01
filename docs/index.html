@@ -259,18 +259,22 @@
       padding-bottom: 60px;
     }
     h1 {
-      margin: 0 0 22px;
-      max-width: 11.5ch;
+      margin: 0 0 24px;
+      max-width: 13.6ch;
       color: var(--ink);
-      font-size: clamp(46px, 5.8vw, 72px);
-      font-weight: 760;
-      line-height: 1.06;
+      font-size: clamp(42px, 4.7vw, 62px);
+      font-weight: 820;
+      line-height: 1.09;
       letter-spacing: 0;
     }
-    h1 .muted { color: var(--ink-3); }
+    h1 .muted { color: var(--ink-2); }
     h1 .accent-word {
-      color: var(--accent-ink);
-      text-shadow: 0 0 22px color-mix(in oklch, var(--accent) 16%, transparent);
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: .08em;
+      text-underline-offset: .16em;
+      text-shadow: 0 0 16px color-mix(in oklch, var(--accent) 10%, transparent);
     }
     .hero-sub {
       max-width: 54ch;
