@@ -3,8 +3,9 @@ package state
 import (
 	"encoding/json"
 	"os"
-	"path/filepath"
 	"sync"
+
+	"github.com/writefence/writefence/internal/localfiles"
 )
 
 type data struct {
@@ -37,8 +38,7 @@ func (s *State) load() {
 
 func (s *State) save() {
 	b, _ := json.Marshal(s.d)
-	_ = os.MkdirAll(filepath.Dir(s.path), 0755)
-	_ = os.WriteFile(s.path, b, 0644)
+	_ = localfiles.WriteFile(s.path, b)
 }
 
 func (s *State) IsQueried() bool {

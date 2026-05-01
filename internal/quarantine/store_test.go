@@ -3,6 +3,7 @@ package quarantine_test
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"sync/atomic"
 	"testing"
@@ -32,6 +33,50 @@ func TestStoreAppendAndList(t *testing.T) {
 	if entries[0].Status != quarantine.StatusPending {
 		t.Fatalf("expected pending status, got %s", entries[0].Status)
 	}
+}
+
+func TestStoreUsesRestrictivePermissions(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "writefence-data")
+	path := filepath.Join(dir, "quarantine.jsonl")
+	store := quarantine.New(path, "http://127.0.0.1:1")
+
+	if err := store.Append(quarantine.Entry{TraceID: "adm_secure", Doc: wal.DocFields{Text: "[STATUS] pending"}}); err != nil {
+		t.Fatal(err)
+	}
+
+	dirInfo, err := os.Stat(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := dirInfo.Mode().Perm(); got != 0o700 {
+		t.Fatalf("expected data directory mode 0700, got %04o", got)
+	}
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := fileInfo.Mode().Perm(); got != 0o600 {
+		t.Fatalf("expected quarantine file mode 0600, got %04o", got)
+	}
+}
+
+func TestStoreTightensExistingLoosePermissions(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "writefence-data")
+	path := filepath.Join(dir, "quarantine.jsonl")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte(""), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	store := quarantine.New(path, "http://127.0.0.1:1")
+	if err := store.Append(quarantine.Entry{TraceID: "adm_secure_existing", Doc: wal.DocFields{Text: "[STATUS] pending"}}); err != nil {
+		t.Fatal(err)
+	}
+
+	assertMode(t, dir, 0o700)
+	assertMode(t, path, 0o600)
 }
 
 func TestStoreApproveForwardsAndUpdatesStatus(t *testing.T) {
@@ -105,5 +150,16 @@ func TestStoreRejectUpdatesStatusWithoutForward(t *testing.T) {
 	}
 	if entries[0].Status != quarantine.StatusRejected {
 		t.Fatalf("expected rejected status, got %s", entries[0].Status)
+	}
+}
+
+func assertMode(t *testing.T, path string, want os.FileMode) {
+	t.Helper()
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := info.Mode().Perm(); got != want {
+		t.Fatalf("expected %s mode %04o, got %04o", path, want, got)
 	}
 }

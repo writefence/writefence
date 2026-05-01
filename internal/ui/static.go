@@ -124,7 +124,7 @@ const indexHTML = `<!doctype html>
       <div class="topline">
         <div>
           <h1 id="title">Overview</h1>
-          <div class="hint">Agent -> WriteFence :9622 -> Memory store</div>
+          <div class="hint">Agent -> WriteFence 127.0.0.1:9622 -> Memory store</div>
         </div>
         <button class="primary" id="refresh">Refresh</button>
       </div>
@@ -187,7 +187,7 @@ const indexHTML = `<!doctype html>
 	      view.innerHTML =
 	        '<div class="section strip">' + (data.status || []).map(s => '<div class="status"><strong>' + esc(s.name) + ': ' + esc(s.state) + '</strong><span>' + esc(s.detail) + '</span></div>').join("") + '</div>' +
 	        '<div class="section grid cols-4">' + ["allowed","warned","quarantined","blocked"].map(k => '<div class="panel pad metric"><div class="label">' + k + '</div><div class="value ' + k + '">' + esc(counters[k] || 0) + '</div></div>').join("") + '</div>' +
-	        '<div class="section panel pad"><div class="arch">Agent -> WriteFence :9622 -> Memory store\n              |-> WAL\n              |-> Quarantine</div></div>' +
+	        '<div class="section panel pad"><div class="arch">Agent -> WriteFence 127.0.0.1:9622 -> Memory store\n              |-> WAL\n              |-> Quarantine</div></div>' +
 	        '<div class="section panel tablewrap"><table class="events-table"><thead><tr><th>time</th><th>decision</th><th>rule</th><th>reason</th><th>preview</th><th>retryable</th><th>trace ID</th></tr></thead><tbody>' + (data.feed || []).map(e => row(e, false)).join("") + '</tbody></table></div>' +
 	        '<div class="section panel pad"><div class="rules">' + (data.rules || []).map(r => '<div class="rule"><strong class="' + (r.enabled ? "" : "off") + '">' + esc(r.id) + '</strong><div class="hint">' + esc(r.detail) + '</div></div>').join("") + '</div></div>';
 	    }

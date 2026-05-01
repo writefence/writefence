@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/writefence/writefence/internal/localfiles"
 	"github.com/writefence/writefence/internal/wal"
 )
 
@@ -181,10 +181,7 @@ func (s *Store) appendLocked(entry Entry) error {
 		entry.Status = StatusPending
 	}
 
-	if err := os.MkdirAll(filepath.Dir(s.path), 0755); err != nil {
-		return err
-	}
-	f, err := os.OpenFile(s.path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
+	f, err := localfiles.OpenAppend(s.path)
 	if err != nil {
 		return err
 	}

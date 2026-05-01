@@ -5,9 +5,19 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: "Publish the GitHub Release after build artifacts are created"
+        required: true
+        default: false
+        type: boolean
+      owner_approval:
+        description: "Type: I have explicit owner approval to publish this GitHub Release"
+        required: true
+        type: string
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -63,10 +73,27 @@ jobs:
 
   release:
     name: publish release assets
-    if: startsWith(github.ref, 'refs/tags/')
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.publish_release == true &&
+      startsWith(github.ref, 'refs/tags/')
     needs: build
     runs-on: ubuntu-latest
+    environment: owner-approved-github-release
+    permissions:
+      contents: write
     steps:
+      - name: Verify owner approval attestation
+        env:
+          OWNER_APPROVAL: ${{ inputs.owner_approval }}
+        run: |
+          set -euo pipefail
+          expected="I have explicit owner approval to publish this GitHub Release"
+          if [ "${OWNER_APPROVAL}" != "${expected}" ]; then
+            printf 'Release publication requires the exact owner approval attestation.\n' >&2
+            exit 1
+          fi
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:

@@ -49,7 +49,12 @@ Use `--metrics=false` to disable `/metrics` regardless of the YAML value.
 
 ## Proxy settings
 
-- `addr` controls where WriteFence listens.
+- `addr` controls where WriteFence listens. The default is
+  `127.0.0.1:9622`, which keeps the unauthenticated local operator UI,
+  quarantine controls, logs, and metrics on loopback. Binding to `0.0.0.0`,
+  `:9622`, or another non-loopback address can expose local operator controls
+  and data previews; use that only inside a trusted local environment with
+  external access controls.
 - `upstream` points to the memory store that receives accepted writes.
 - `state_file` stores local session state.
 - `violations_log` stores blocked, warned, and quarantined write events.
@@ -59,7 +64,10 @@ Use `--metrics=false` to disable `/metrics` regardless of the YAML value.
   at `/metrics`.
 
 If `WRITEFENCE_DATA_DIR` is set, default local files are created under that
-directory. Otherwise WriteFence uses `~/.writefence`.
+directory. Otherwise WriteFence uses `~/.writefence`. WriteFence-created local
+state and log directories use owner-only permissions (`0700` directories and
+`0600` files) because WAL, violations, quarantine, and state files may contain
+memory write previews and operator decisions.
 
 ## Rule settings
 

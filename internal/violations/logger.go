@@ -3,10 +3,10 @@ package violations
 import (
 	"encoding/json"
 	"log"
-	"os"
-	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/writefence/writefence/internal/localfiles"
 )
 
 // Entry is one violation record written to the JSONL log.
@@ -32,11 +32,7 @@ func (l *Logger) Log(e Entry) {
 	e.Ts = time.Now().UTC().Format(time.RFC3339)
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	if err := os.MkdirAll(filepath.Dir(l.path), 0755); err != nil {
-		log.Printf("[writefence/violations] cannot create log directory: %v", err)
-		return
-	}
-	f, err := os.OpenFile(l.path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	f, err := localfiles.OpenAppend(l.path)
 	if err != nil {
 		log.Printf("[writefence/violations] cannot open log: %v", err)
 		return

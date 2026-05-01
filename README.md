@@ -24,7 +24,7 @@ WriteFence governs the write path with a four-state admission model:
 Agent / MCP client / app
           |
           v
-    WriteFence proxy :9622
+    WriteFence proxy 127.0.0.1:9622
           |
           +-- allowed / warned  ---> LightRAG or compatible store
           |
@@ -193,7 +193,7 @@ Deterministic screenshot fixtures can be generated with:
 
 ```bash
 WRITEFENCE_DEMO_OVERWRITE=1 ./demo/ui-demo-data.sh /tmp/writefence-ui-demo
-env WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo ./bin/writefence --addr :9622 --upstream http://127.0.0.1:9621
+env WRITEFENCE_DATA_DIR=/tmp/writefence-ui-demo ./bin/writefence --addr 127.0.0.1:9622 --upstream http://127.0.0.1:9621
 ./demo/capture-ui-screenshots.py --url http://127.0.0.1:9622/_writefence --out docs/assets/ui
 ```
 

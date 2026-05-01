@@ -10,8 +10,8 @@ import (
 
 func TestDefaultsAreValid(t *testing.T) {
 	cfg := config.Defaults()
-	if cfg.Proxy.Addr != ":9622" {
-		t.Errorf("expected addr :9622, got %s", cfg.Proxy.Addr)
+	if cfg.Proxy.Addr != "127.0.0.1:9622" {
+		t.Errorf("expected addr 127.0.0.1:9622, got %s", cfg.Proxy.Addr)
 	}
 	if cfg.Rules.English.Threshold != 0.05 {
 		t.Errorf("expected english threshold 0.05, got %f", cfg.Rules.English.Threshold)
@@ -46,7 +46,7 @@ func TestLoadEmptyPath(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if cfg.Proxy.Addr != ":9622" {
+	if cfg.Proxy.Addr != "127.0.0.1:9622" {
 		t.Error("empty path should return defaults")
 	}
 }

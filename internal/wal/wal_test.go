@@ -90,6 +90,45 @@ func TestWALWritesAllowedEntry(t *testing.T) {
 	}
 }
 
+func TestWALUsesRestrictivePermissions(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "writefence-data")
+	path := filepath.Join(dir, "wal.jsonl")
+	l := wal.NewLogger(path)
+
+	l.Log(wal.Entry{Doc: wal.DocFields{Text: "[STATUS] secure"}, Result: "allowed"})
+
+	dirInfo, err := os.Stat(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := dirInfo.Mode().Perm(); got != 0o700 {
+		t.Fatalf("expected data directory mode 0700, got %04o", got)
+	}
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := fileInfo.Mode().Perm(); got != 0o600 {
+		t.Fatalf("expected WAL file mode 0600, got %04o", got)
+	}
+}
+
+func TestWALTightensExistingLoosePermissions(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "writefence-data")
+	path := filepath.Join(dir, "wal.jsonl")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte(""), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	wal.NewLogger(path).Log(wal.Entry{Doc: wal.DocFields{Text: "[STATUS] secure"}, Result: "allowed"})
+
+	assertMode(t, dir, 0o700)
+	assertMode(t, path, 0o600)
+}
+
 func TestWALWritesBlockedEntry(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "wal.jsonl")
 	l := wal.NewLogger(path)
@@ -241,5 +280,16 @@ func TestWALConcurrentWrites(t *testing.T) {
 	lines := strings.Split(strings.TrimRight(string(data), "\n"), "\n")
 	if len(lines) != n {
 		t.Fatalf("expected %d entries, got %d", n, len(lines))
+	}
+}
+
+func assertMode(t *testing.T, path string, want os.FileMode) {
+	t.Helper()
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := info.Mode().Perm(); got != want {
+		t.Fatalf("expected %s mode %04o, got %04o", path, want, got)
 	}
 }

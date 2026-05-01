@@ -54,7 +54,7 @@ func Defaults() Config {
 	dataDir := defaultDataDir()
 	return Config{
 		Proxy: ProxyConfig{
-			Addr:           ":9622",
+			Addr:           "127.0.0.1:9622",
 			Upstream:       "http://127.0.0.2:9621",
 			StateFile:      filepath.Join(dataDir, "session-state.json"),
 			ViolationsLog:  filepath.Join(dataDir, "writefence-violations.jsonl"),
