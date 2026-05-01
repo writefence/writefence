@@ -390,32 +390,52 @@
     }
     .flow-arrow.dirty { color: var(--blocked); }
     .flow-arrow.clean { color: var(--allowed); }
+    .check-line {
+      fill: none;
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      opacity: .78;
+    }
+    .check-line.allowed { stroke: var(--allowed); }
+    .check-line.warned { stroke: var(--warned); }
+    .check-line.quarantined { stroke: var(--quarantined); }
+    .check-line.blocked { stroke: var(--blocked); }
     .payload {
       opacity: 0;
       transform-box: fill-box;
       transform-origin: center;
     }
-    .flow-arrow.dirty .payload {
-      fill: var(--blocked);
-      stroke: var(--warned);
-      stroke-width: .7;
-      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--blocked) 46%, transparent));
-      animation: dirty-flow 4.2s cubic-bezier(.22, 1, .36, 1) infinite;
-      animation-delay: 200ms;
+    .check-payload {
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: check-flow 4.2s cubic-bezier(.22, 1, .36, 1) infinite;
     }
-    .flow-arrow.dirty .payload:nth-of-type(3) { fill: var(--warned); animation-delay: 420ms; }
-    .flow-arrow.dirty .payload:nth-of-type(4) { animation-delay: 650ms; }
+    .check-payload.allowed {
+      fill: var(--allowed);
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--allowed) 44%, transparent));
+      animation-delay: 120ms;
+    }
+    .check-payload.warned {
+      fill: var(--warned);
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--warned) 44%, transparent));
+      animation-delay: 300ms;
+    }
+    .check-payload.quarantined {
+      fill: var(--quarantined);
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--quarantined) 44%, transparent));
+      animation-delay: 480ms;
+    }
+    .check-payload.blocked {
+      fill: var(--blocked);
+      filter: drop-shadow(0 0 5px color-mix(in oklch, var(--blocked) 44%, transparent));
+      animation-delay: 660ms;
+    }
     .flow-arrow.clean .payload {
       fill: var(--allowed);
       filter: drop-shadow(0 0 5px color-mix(in oklch, var(--allowed) 46%, transparent));
       animation: clean-flow 4.2s cubic-bezier(.22, 1, .36, 1) infinite;
       animation-delay: 2350ms;
-    }
-    .flow-arrow.dirty .stream-line {
-      stroke: color-mix(in oklch, var(--blocked) 76%, var(--warned));
-      stroke-dasharray: 3 4;
-      animation: stream-dash 1.6s linear infinite;
-      animation-delay: 200ms;
     }
     .flow-arrow.clean .stream-line {
       stroke: var(--allowed);
@@ -425,14 +445,13 @@
     @keyframes stream-dash {
       to { stroke-dashoffset: -28; }
     }
-    .flow-arrow.clean .payload:nth-of-type(3) { animation-delay: 2520ms; }
-    @keyframes dirty-flow {
-      0% { opacity: 0; transform: translate(-18px, -7px) rotate(-12deg) scale(.72); }
-      12% { opacity: 0; transform: translate(-14px, -6px) rotate(-10deg) scale(.78); }
-      24% { opacity: 1; }
-      43% { transform: translate(10px, 5px) rotate(7deg) scale(1); opacity: .88; }
-      55% { transform: translate(22px, 0) rotate(0deg) scale(.38); opacity: 0; }
-      100% { opacity: 0; transform: translate(22px, 0) rotate(0deg) scale(.38); }
+    @keyframes check-flow {
+      0% { opacity: 0; transform: translate(-18px, 0) scale(.74); }
+      10% { opacity: 0; transform: translate(-14px, 0) scale(.78); }
+      22% { opacity: .92; }
+      44% { transform: translate(18px, 0) scale(1); opacity: .92; }
+      56% { transform: translate(26px, 0) scale(.5); opacity: 0; }
+      100% { opacity: 0; transform: translate(26px, 0) scale(.5); }
     }
     @keyframes clean-flow {
       0% { opacity: 0; transform: translate(-15px, 0) scale(.72); }
@@ -1432,10 +1451,14 @@
                 </div>
                 <div class="flow-arrow dirty" aria-hidden="true">
                   <svg viewBox="0 0 54 38" role="img">
-                    <path class="stream-line" d="M4 19 C16 11 28 27 50 19"></path>
-                    <path class="payload" d="M9 13h8l3 4-3 4H9z"></path>
-                    <rect class="payload" x="18" y="20" width="9" height="7" rx="1.5"></rect>
-                    <path class="payload" d="M27 12h7l4 5-4 5h-7z"></path>
+                    <path class="check-line allowed" d="M4 10 H50"></path>
+                    <path class="check-line warned" d="M4 16 H50"></path>
+                    <path class="check-line quarantined" d="M4 22 H50"></path>
+                    <path class="check-line blocked" d="M4 28 H50"></path>
+                    <rect class="check-payload allowed" x="15" y="7" width="7" height="6" rx="1.5"></rect>
+                    <rect class="check-payload warned" x="15" y="13" width="7" height="6" rx="1.5"></rect>
+                    <rect class="check-payload quarantined" x="15" y="19" width="7" height="6" rx="1.5"></rect>
+                    <rect class="check-payload blocked" x="15" y="25" width="7" height="6" rx="1.5"></rect>
                   </svg>
                 </div>
                 <div class="flow-node gate">
@@ -1448,8 +1471,7 @@
                 <div class="flow-arrow clean" aria-hidden="true">
                   <svg viewBox="0 0 54 38" role="img">
                     <path class="stream-line" d="M4 19 C18 19 34 19 50 19"></path>
-                    <rect class="payload" x="13" y="15" width="11" height="8" rx="2"></rect>
-                    <rect class="payload" x="27" y="16" width="9" height="6" rx="2"></rect>
+                    <rect class="payload" x="21" y="15" width="11" height="8" rx="2"></rect>
                   </svg>
                 </div>
                 <div class="flow-node">
