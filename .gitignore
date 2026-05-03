@@ -4,6 +4,10 @@
 writefence.yaml
 writefence.local.yaml
 
+# Private local agent/planning material
+AGENTS.md
+plans/
+
 # Runtime data
 *.jsonl
 *.log

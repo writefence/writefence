@@ -1,5 +1,7 @@
 .git
 .github
+.env
+.env.*
 bin
 dist
 coverage.out
@@ -8,9 +10,11 @@ writefence-cli
 writefence-mcp
 *.jsonl
 *.log
+session-state.json
 .writefence
 writefence.yaml
 writefence.local.yaml
 PRE_PUBLIC_*.md
 docs/assets/ui
 AGENTS.md
+plans
